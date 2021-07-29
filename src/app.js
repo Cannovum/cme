@@ -97,3 +97,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
 })
+
+document.querySelector(".lecture_content_main div h1").innerHTML = "Yo es geht"
