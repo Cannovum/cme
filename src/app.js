@@ -7,13 +7,17 @@ import courseOverview from "./courseOverview.js"
 import videoView from "./videoView.js"
 
 const courseWrapper = document.querySelector(".curriulum_c_wrapper")
-const course = document.querySelector("#course_data").getAttribute("data-course")
+const course = document
+  .querySelector("#course_data")
+  .getAttribute("data-course")
 
 window.addEventListener("popstate", (e) => {
   router(window.location.href)
 })
 
-document.addEventListener("DOMContentLoaded", () => router(window.location.href))
+document.addEventListener("DOMContentLoaded", () =>
+  router(window.location.href)
+)
 
 async function navigateTo(url, replace = false, stateData = null) {
   history.pushState(null, null, url)
@@ -32,7 +36,10 @@ async function router(url) {
     },
     {
       name: "watch",
-      view: async () => courseWrapper.append(await videoView(course, Number(queries.get("lesson")))),
+      view: async () =>
+        courseWrapper.append(
+          await videoView(course, Number(queries.get("lesson")))
+        ),
     },
     {
       name: "notFound",
@@ -61,18 +68,23 @@ async function getCoursesData(course, lesson = null) {
   const localData = localStorage.getItem(course)
   if (localData) {
     fetchData(course, lesson)
-    return lesson != null ? JSON.parse(localData)[lesson] : JSON.parse(localData)
+    return lesson != null
+      ? JSON.parse(localData)[lesson]
+      : JSON.parse(localData)
   } else {
     return await fetchData(course, lesson)
   }
 
   async function fetchData(course, lesson) {
-    const result = await fetch("https://mocki.io/v1/3172ef8d-e1b7-4769-b4a0-f22918057fb1", {
-      // method: "POST",
-      // body: JSON.stringify({ //?Re-enable later
-      //   course: "kurs_1",
-      // }),
-    })
+    const result = await fetch(
+      "https://mocki.io/v1/3172ef8d-e1b7-4769-b4a0-f22918057fb1",
+      {
+        // method: "POST",
+        // body: JSON.stringify({ //?Re-enable later
+        //   course: "kurs_1",
+        // }),
+      }
+    )
       .then((res) => res.json())
       .then((json) => {
         const decompressedCSV = LZUTF8.decompress(json.data.toString(), {
@@ -98,4 +110,5 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 })
 
-document.querySelector(".lecture_content_main div h1").innerHTML = "Yo es geht"
+document.querySelector(".lecture_content_main div h1").innerHTML =
+  "Yo es geht wieder"

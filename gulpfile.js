@@ -1,20 +1,23 @@
 const gulp = require("gulp")
-const concat = require("gulp-concat")
 const terser = require("gulp-terser")
-const sourcemaps = require("gulp-sourcemaps")
 const git = require("gulp-git")
+const source = require("vinyl-source-stream")
+const buffer = require("vinyl-buffer")
+const rollupStream = require("@rollup/stream")
 const yargs = require("yargs")
 const { src, series, parallel, dest, watch } = require("gulp")
 
-const jsPath = "src/*.js"
-const distPath = "dist/"
+// const jsPath = "src/*.js"
+const distPath = "./dist"
 
-function jsTask() {
-  return src(jsPath)
-    .pipe(sourcemaps.init())
-    .pipe(concat("cme.js"))
-    .pipe(terser())
-    .pipe(sourcemaps.write("."))
+function js() {
+  const options = {
+    input: "./src/app.js",
+    output: { format: "iife" },
+  }
+  return rollupStream(options)
+    .pipe(source("cme.js"))
+    .pipe(buffer())
     .pipe(dest(distPath))
 }
 
@@ -34,5 +37,15 @@ const errFunction = (err) => {
   if (err) throw err
 }
 
-exports.jsTask = jsTask()
-exports.default = series(parallel(jsTask), add(), commit("Test"), push("dev"))
+// exports.js = js()
+// exports.default = series(parallel(js), add(), commit("Test"), push("dev"))
+
+const options = {
+  input: "./src/app.js",
+  output: { format: "iife" },
+}
+console.log(
+  rollupStream(options).on("end", (e) => {
+    console.log(e)
+  })
+)
