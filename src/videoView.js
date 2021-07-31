@@ -1,4 +1,4 @@
-export default async function VideoView(course, lesson) {
+export default async function VideoView(data) {
   const videoWrapper = document.createElement("div")
   videoWrapper.classList.add("lesson_wrapper")
   const playerOptions = {
@@ -7,8 +7,8 @@ export default async function VideoView(course, lesson) {
     width: "600px",
     id: "https://vimeo.com/270665447",
   }
-  const lessonData = await getCoursesData(course, lesson)
-  const vimeoLink = lessonData["vimeo_link"]
+
+  const vimeoLink = data["vimeo_link"]
 
   playerOptions.id = vimeoLink
   const playerDiv = document.createElement("div")
@@ -19,8 +19,8 @@ export default async function VideoView(course, lesson) {
   videoDesc.classList.add("video_desc")
   const content = `
     <div class="">
-      <h2>${lessonData["name"]}</h2>
-      <p class="video_desc">${lessonData["text"]}</p>
+      <h2>${data["name"]}</h2>
+      <p class="video_desc">${data["text"]}</p>
     </div>`
   videoDesc.innerHTML = content
 

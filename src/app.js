@@ -26,26 +26,22 @@ async function navigateTo(url, replace = false, stateData = null) {
 
 async function router(url) {
   const queries = new URL(url).searchParams
+  const data = await getCoursesData(course)
   const routes = [
     {
       name: "courses",
       view: async () => {
-        const data = await getCoursesData(course)
-        courseWrapper.append(await courseOverview(data))
+        courseWrapper.append(data)
       },
     },
     {
       name: "watch",
-      view: async () =>
-        courseWrapper.append(
-          await videoView(course, Number(queries.get("lesson")))
-        ),
+      view: async () => courseWrapper.append(await videoView(data)),
     },
     {
       name: "notFound",
       view: async () => {
         console.log("not found")
-        const data = await getCoursesData(course)
         const overview = courseWrapper.appendChild(await courseOverview(data))
         overview.update()
       },
@@ -64,7 +60,7 @@ async function router(url) {
 }
 
 async function getCoursesData(course, lesson = null) {
-  lesson = lesson ? lesson - 1 : null
+  lesson = lesson ? lesson - 1 : null // Lesson starts with 1, but the index with 0, so -1
   const localData = localStorage.getItem(course)
   if (localData) {
     fetchData(course, lesson)
