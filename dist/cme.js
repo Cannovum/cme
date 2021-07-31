@@ -7843,6 +7843,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-document.querySelector(".lecture_content_main div h1").innerHTML = "Yo es geht wieder";
+document.querySelector(".lecture_content_main div h1").innerHTML = "Test test";
 },{"./lzutf8.min.js":"lzutf8.min.js","./papaparse.min.js":"papaparse.min.js","./courseOverview.js":"courseOverview.js","./videoView.js":"videoView.js"}]},{},["app.js"], null)
 //# sourceMappingURL=/cme.js.map
