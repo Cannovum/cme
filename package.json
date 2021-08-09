@@ -4,7 +4,8 @@
   "description": "Single-Page-Application code for CME",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "parcel ./src/cme.js",
+    "build": "parcel build ./src/cme.js"
   },
   "repository": {
     "type": "git",
@@ -16,10 +17,11 @@
   },
   "homepage": "https://github.com/Cannovum/cme#readme",
   "devDependencies": {
-    "gulp": "^4.0.2",
-    "gulp-git": "^2.10.1",
-    "gulp-terser": "^2.0.1",
-    "parcel-bundler": "^1.12.5",
-    "yargs": "^7.1.2"
+    "@vimeo/player": "^2.16.0",
+    "lzutf8": "^0.6.0",
+    "papaparse": "^5.3.1"
+  },
+  "dependencies": {
+    "parcel-bundler": "^1.12.5"
   }
 }
