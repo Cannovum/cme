@@ -1,6 +1,7 @@
 import Player from "@vimeo/player"
+import { loggedIn } from "./helpers"
 
-export default async function createVideoView(lesson) {
+export default async function createVideoView(lesson, courseID, courseData) {
 	const wrapper = document.createElement("div")
 	wrapper.classList.add("lesson_wrapper", "mt40")
 
@@ -10,10 +11,8 @@ export default async function createVideoView(lesson) {
 		title: false,
 		width: "687px",
 	}
-
 	const playerContainer = document.createElement("div")
 	playerContainer.classList.add("lecture_video-container")
-
 	const playerDiv = document.createElement("div")
 	playerDiv.classList.add("course_player_video")
 	playerDiv.setAttribute("data-vimeo-id", lesson["vimeo_link"])
@@ -21,22 +20,19 @@ export default async function createVideoView(lesson) {
 	playerContainer.appendChild(playerDiv)
 
 	const player = wrapper.player
-	player.on("loaded", () => console.log("VIDEO LOADED"))
 	player.on("play", () => {
-		console.log("BUOO")
 		checkPlayer()
-		console.log("YOO")
+		updateMsLastWatch(lesson, courseID)
 	})
 	player.on("timeupdate", () => {
 		checkPlayer()
 	})
+	player.on("ended", () => {
+		updateMsWatched(lesson, courseID)
+	})
 
 	function checkPlayer() {
-		console.log("HIIIII")
-		// console.log(("Logged: " + loggedIn, "public: " + lesson["public"]))
-
-		if (true) {
-			//!loggedIn && !lesson["public"]
+		if (!loggedIn() && !lesson["public"]) {
 			player.unload()
 			playerDiv.innerHTML = `
 			<p>Bitte loggen Sie sich ein um das Video zu sehen</p>
@@ -44,6 +40,36 @@ export default async function createVideoView(lesson) {
 
 			sessionStorage.setItem("redirect", window.location.href)
 		}
+	}
+
+	function updateMsLastWatch(lesson, courseID) {
+		if (!loggedIn) {
+			return
+		}
+		MemberStack.onReady.then(async (member) => {
+			const memberData = await member.getMetaData()
+
+			const memberProgress = {
+				[courseID]: { ...memberData[courseID], lastWatched: lesson },
+			}
+
+			member.updateMetaData(memberProgress)
+		})
+	}
+
+	function updateMsWatched(lesson, courseID) {
+		if (!loggedIn) return
+
+		MemberStack.onReady.then(async (member) => {
+			const oldData = (await member.getMetaData())[courseID] || []
+			const updatedData = {
+				[courseID]: {
+					...oldData,
+					watched: [...(oldData.watched || []), lesson["episode"]],
+				},
+			}
+			member.updateMetaData(updatedData)
+		})
 	}
 
 	//* Description

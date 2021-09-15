@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Cannovum/cme#readme",
   "devDependencies": {
     "@vimeo/player": "^2.16.0",
+    "axios": "^0.21.1",
     "lzutf8": "^0.6.0",
     "papaparse": "^5.3.1"
   },

@@ -1,9 +1,14 @@
-export default function createSidebar(data) {
+import { getMsMetaData, getVimeoThumbnail } from "./helpers"
+
+export default async function createSidebar(data, courseID) {
 	const queries = new URL(window.location.href).searchParams
 	const view = queries.get("view")
-	const loggedIn = localStorage.getItem("loggedIn")
 
 	const sidebar = document.createElement("div") // Main	element
+
+	let loggedIn = await MemberStack.onReady.then((member) => {
+		return member.loggedIn
+	})
 
 	if (!loggedIn) {
 		const loginBox = sidebar.appendChild(createLoginbox())
@@ -12,9 +17,11 @@ export default function createSidebar(data) {
 	switch (view) {
 		case "watch":
 			sidebar.appendChild(createCurricuum(data, queries))
+			break
 
 		default:
 			if (!loggedIn) sidebar.appendChild(createFeatureList(data))
+			else sidebar.appendChild(await createLastWatch(courseID))
 	}
 
 	return sidebar
@@ -35,7 +42,7 @@ function createLoginbox() {
 	// * Button
 	const buttonWrapper = document.createElement("a")
 	buttonWrapper.classList.add("button", "w100p", "shadow-lv2", "w-inline-block")
-	buttonWrapper.href = "#LOGIN-SEITE_HIER"
+	buttonWrapper.href = window.location.origin + "/member/denied" // https://cme-testt.webflow.io/member/denied
 	buttonWrapper.setAttribute("data-dc-login", true)
 	const buttonInner = document.createElement("div")
 	buttonInner.classList.add("button-inner")
@@ -52,14 +59,15 @@ function createLoginbox() {
 
 function createCurricuum(data, queries) {
 	const activeLesson = Number(queries.get("lesson"))
-	const activeChapter = data[activeLesson].chapter
+	const activeLessonIndex = activeLesson - 1
+	const activeChapter = data[activeLessonIndex].chapter
 
 	// *** Build DOM
 	const curriculum = document.createElement("div")
 	curriculum.classList.add("sticky_curriculum")
 	const currTitle = document.createElement("h2")
-	currTitle.classList.add("normal-text", "bold", "black")
-	currTitle.innerText = "Kurs Inhalt"
+	currTitle.classList.add("normal-text", "bold", "black", "mt0")
+	currTitle.innerText = "Curriculum"
 	curriculum.appendChild(currTitle)
 
 	// Sort data in chapters
@@ -87,21 +95,20 @@ function createCurricuum(data, queries) {
 		titleWrapper.classList.add("cme-sidebar_chapter-title-container")
 
 		const title = document.createElement("h3")
-		title.classList.add("normal-text", "bold", "black")
+		title.classList.add("normal-text", "bold", "mtb0", "black")
 		title.innerText = chapter[0]["chapter_title"]
 
-		const chapterIndicator = document.createElement("div")
-		chapterIndicator.classList.add("curr-chapter_indc", "shadow-lv2", "mr16")
-		if (index == activeChapter) {
-			chapterIndicator.classList.add("bg_primary", "text_white")
+		if (activeChapter == index) {
+			const chapterIndicator = document.createElement("div")
+			chapterIndicator.classList.add("dot", "bg_primary", "mr12")
+			titleWrapper.appendChild(chapterIndicator)
 		}
-		chapterIndicator.innerText = "K" + index
+		titleWrapper.append(title)
 
 		const lessonsWrapper = document.createElement("div")
 		lessonsWrapper.classList.add("cme-sidebar_curr-content")
 
 		chapterWrapper.append(titleWrapper, lessonsWrapper)
-		titleWrapper.append(chapterIndicator, title)
 
 		chapter.forEach((arrayLesson) => {
 			//For each lesson in chapter
@@ -191,3 +198,58 @@ function createFeatureList(data) {
 
 	return list
 }
+
+async function createLastWatch(courseID) {
+	const {
+		episode,
+		vimeo_link = false,
+		name,
+		chapter_title: chapterTitle,
+	} = (await getMsMetaData())[courseID].lastWatched
+
+	const wrapper = document.createElement("div")
+	wrapper.classList.add("cme-sidebar_continue-wrapper")
+
+	const url = new URL(window.location.href)
+	url.searchParams.set("view", "watch")
+	url.searchParams.set("lesson", episode)
+	const link = url.href
+
+	let html = ""
+	if (vimeo_link) {
+		const thumbnail = await getVimeoThumbnail(vimeo_link)
+		html = `
+				<div class="">
+				<a href="${link}" class="w-inline-block">
+				<div class="h3 mb8 mt0">Weiter anschauen</div>
+			</a>
+			<a href="${link}" class="w-inline-block">
+			<img src="${thumbnail}" loading="lazy" class="cme-sidebar_continue-thumb">
+			</a>
+			<a href="${link}" class="w-inline-block">
+				<div class="black bold mb4 hover-primary">${name}</div>
+			</a>
+			<div class="black text-small">Kurs:&nbsp;${chapterTitle} - Lektion ${episode} </div>
+			`
+	} else {
+		html = `
+				<div class="">
+				<a href="${link}" class="w-inline-block">
+				<div class="h3 mb8 mt0">Weiter lernen</div>
+			</a>
+			<a href="${link}" class="w-inline-block">
+				<div class="black bold mb4 hover-primary">${name}</div>
+			</a>
+			<div class="black text-small">Kurs:&nbsp;${chapterTitle} - Lektion ${episode} </div>
+			`
+	}
+
+	wrapper.innerHTML = html
+
+	return wrapper
+}
+
+/**  
+ * Icon check primary
+https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/6113dc7b99640a9959353878_done%20-success-1.svg
+*/
