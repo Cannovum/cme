@@ -37,7 +37,7 @@ export default async function createVideoView(lesson, courseID, courseData) {
 					player.unload()
 					playerDiv.innerHTML = `
 				<p>Bitte loggen Sie sich ein um das Video zu sehen</p>
-				<iframe align="left" frameborder="0" scrolling="no" width="467" height="231" name="dc_login_iframe" id="dc_login_iframe" src="https://login.doccheck.com/code/de/2000000017764/login_xl/" style="border-radius: 16px"><a href="https://login.doccheck.com/code/de/2000000017764/login_xl/" target="_blank">LOGIN</a></iframe>`
+				<iframe align="left" frameborder="0" scrolling="no" width="467" height="231" name="dc_login_iframe" id="dc_login_iframe" src="https://login.doccheck.com/code/de/2000000017764/login_xl/" style="border-radius: 16px"><a href="https://login.doccheck.com/code/de/2000000016834/login_xl/" target="_blank">LOGIN</a></iframe>`
 
 					sessionStorage.setItem("redirect", window.location.href)
 				}

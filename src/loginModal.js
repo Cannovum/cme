@@ -1,4 +1,4 @@
-export default function createLoginModale() {
+export default function createLoginModal() {
 	const modalWrapper = document.createElement("div")
 	modalWrapper.classList.add(
 		"modal_wrapper-" + (Math.random() + 1).toString(36).substring(2)
@@ -11,7 +11,7 @@ export default function createLoginModale() {
 	modal.classList.add("modal")
 	const body = document.createElement("div")
 	body.classList.add("modal-body")
-	body.innerHTML = `<iframe align="left" frameborder="0" scrolling="no" width="424" height="215" name="dc_login_iframe" id="dc_login_iframe" src="https://login.doccheck.com/code/de/2000000017764/login_l/" ><a href="https://login.doccheck.com/code/de/2000000017764/login_l/" target="_blank">LOGIN</a></iframe>`
+	body.innerHTML = `<iframe align="left" frameborder="0" scrolling="no" width="424" height="215" name="dc_login_iframe" id="dc_login_iframe" src="https://login.doccheck.com/code/de/2000000017764/login_l/" ><a href="https://login.doccheck.com/code/de/2000000016834/login_l/" target="_blank">LOGIN</a>LOGIN</a></iframe>`
 
 	const closeButton = document.createElement("div")
 	closeButton.classList.add("modal-close-button")
