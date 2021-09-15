@@ -1,10 +1,5 @@
 import axios from "axios"
 
-export function loggedIn() {
-	if (memberstack) return memberstack.isAuthenticated || false
-	else return false
-}
-
 export async function getMsMetaData() {
 	let result = {}
 	await MemberStack.onReady.then(async (member) => {

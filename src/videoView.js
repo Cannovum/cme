@@ -1,5 +1,4 @@
 import Player from "@vimeo/player"
-import { loggedIn } from "./helpers"
 
 export default async function createVideoView(lesson, courseID, courseData) {
 	const wrapper = document.createElement("div")
@@ -31,14 +30,18 @@ export default async function createVideoView(lesson, courseID, courseData) {
 		updateMsWatched(lesson, courseID)
 	})
 
-	function checkPlayer() {
-		if (!loggedIn() && !lesson["public"]) {
-			player.unload()
-			playerDiv.innerHTML = `
-			<p>Bitte loggen Sie sich ein um das Video zu sehen</p>
-			<iframe align="left" frameborder="0" scrolling="no" width="467" height="231" name="dc_login_iframe" id="dc_login_iframe" src="https://login.doccheck.com/code/de/2000000017764/login_xl/" style="border-radius: 16px"><a href="https://login.doccheck.com/code/de/2000000017764/login_xl/" target="_blank">LOGIN</a></iframe>`
+	async function checkPlayer() {
+		if (!lesson["public"]) {
+			MemberStack.onReady.then((member) => {
+				if (!member.loggedIn) {
+					player.unload()
+					playerDiv.innerHTML = `
+				<p>Bitte loggen Sie sich ein um das Video zu sehen</p>
+				<iframe align="left" frameborder="0" scrolling="no" width="467" height="231" name="dc_login_iframe" id="dc_login_iframe" src="https://login.doccheck.com/code/de/2000000017764/login_xl/" style="border-radius: 16px"><a href="https://login.doccheck.com/code/de/2000000017764/login_xl/" target="_blank">LOGIN</a></iframe>`
 
-			sessionStorage.setItem("redirect", window.location.href)
+					sessionStorage.setItem("redirect", window.location.href)
+				}
+			})
 		}
 	}
 

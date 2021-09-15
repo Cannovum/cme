@@ -1,13 +1,10 @@
 import createLoginModale from "./loginModal"
 import { loggedIn } from "./helpers.js"
 
-console.log("Logged in: ", loggedIn())
-
 MemberStack.onReady.then((member) => {
 	// * MS stuff
 	if (member.loggedIn) {
-		localStorage.setItem("loggedIn", "true")
-
+		// Redirect
 		let redirect = sessionStorage.getItem("redirect")
 		if (redirect) {
 			console.log("redirect user")
@@ -15,12 +12,11 @@ MemberStack.onReady.then((member) => {
 			sessionStorage.removeItem("redirect")
 			window.location.assign(redirect) // Redirect user
 		}
+
+		// Hide login button
+		$("[data-dc-login]").hide()
 	} else {
-		localStorage.setItem("loggedIn", "")
-		$(".log_in_btn").click(() => {
-			sessionStorage.setItem("redirect", window.location.href)
-			document.body.append(createLoginModale())
-		})
+		$("[data-dc-logout]").hide()
 	}
 })
 
