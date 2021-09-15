@@ -1,4 +1,4 @@
-import createLoginModale from "./loginModal"
+import createLoginModal from "./loginModal"
 
 MemberStack.onReady.then((member) => {
 	// * MS stuff
