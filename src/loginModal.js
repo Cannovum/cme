@@ -11,7 +11,7 @@ export default function createLoginModal() {
 	modal.classList.add("modal")
 	const body = document.createElement("div")
 	body.classList.add("modal-body")
-	body.innerHTML = `<iframe align="left" frameborder="0" scrolling="no" width="424" height="215" name="dc_login_iframe" id="dc_login_iframe" src="https://login.doccheck.com/code/de/2000000017764/login_l/" ><a href="https://login.doccheck.com/code/de/2000000016834/login_l/" target="_blank">LOGIN</a>LOGIN</a></iframe>`
+	body.innerHTML = `<iframe align="left" frameborder="0" scrolling="no" width="467" height="231" name="dc_login_iframe" id="dc_login_iframe" src="https://login.doccheck.com/code/de/2000000016834/login_xl/" ><a href="https://login.doccheck.com/code/de/2000000016834/login_xl/" target="_blank">LOGIN</a></iframe>`
 
 	const closeButton = document.createElement("div")
 	closeButton.classList.add("modal-close-button")
