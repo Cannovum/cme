@@ -13,6 +13,7 @@ const curriculumWrapper = document.querySelector(".curriulum_c_wrapper")
 const viewWrapper = document.querySelector("#spa-view-toggle")
 const viewContainer = document.querySelector("#spa-view")
 const sidebar = document.querySelector(".sticky_meta_lecture")
+const curriulumStartpage = document.querySelector("#curriculum_2")
 const courseID =
 	document.querySelector("#course_data").getAttribute("data-course") || // Erhalte KursID, geprintet von Webflow (Metadatei im CMS)
 	console.error("Course ID was not found in document")
@@ -31,7 +32,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 	// * Create curriculum
 	const data = await getCoursesData(courseID)
+	const curri = await createCurriculum(data)
 	curriculumWrapper.appendChild(await createCurriculum(data))
+	// Create curriculum at the startpage
+	curriulumStartpage.replaceChildren(await createCurriculum(data))
 
 	// * Construct overview video in overview tab
 	const playerURL = document
@@ -41,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const overviewPlayer = new Player(playerDiv, {
 		byline: false,
 		title: false,
-		width: "687px",
+		width: 687,
 		url: playerURL,
 	})
 
@@ -71,8 +75,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 	})
 
 	// * SPA Links
+	// Navigate within the SPA, override link custom behaviour
 	document.body.addEventListener("click", (e) => {
-		// Navigate within the SPA, override link custom behaviour
 		if (e.target.getAttribute("data-spa-link")) {
 			e.preventDefault()
 			navigateTo(e.target.href)
