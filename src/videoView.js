@@ -46,10 +46,8 @@ export default async function createVideoView(lesson, courseID, courseData) {
 	}
 
 	function updateMsLastWatch(lesson, courseID) {
-		if (!loggedIn) {
-			return
-		}
 		MemberStack.onReady.then(async (member) => {
+			if (!member.loggedIn) return
 			const memberData = await member.getMetaData()
 
 			const memberProgress = {
@@ -61,9 +59,9 @@ export default async function createVideoView(lesson, courseID, courseData) {
 	}
 
 	function updateMsWatched(lesson, courseID) {
-		if (!loggedIn) return
-
 		MemberStack.onReady.then(async (member) => {
+			if (!member.loggedIn) return
+
 			const oldData = (await member.getMetaData())[courseID] || []
 			const updatedData = {
 				[courseID]: {

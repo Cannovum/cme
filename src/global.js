@@ -23,7 +23,14 @@ MemberStack.onReady.then((member) => {
 			e.target.matches("[data-dc-login]") ||
 			e.target.parentNode.matches("[data-dc-login]")
 		) {
-			sessionStorage.setItem("redirect", window.location.href)
+			if (e.target.matches("[data-redirect]")) {
+				sessionStorage.setItem(
+					"redirect",
+					e.target.getAttribute("data-redirect")
+				)
+			} else {
+				sessionStorage.setItem("redirect", window.location.href)
+			}
 			e.preventDefault()
 			document.body.append(createLoginModal())
 		} else if (

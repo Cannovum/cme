@@ -4,12 +4,15 @@ const Path = require("path")
 const entryFiles = [
 	Path.join(__dirname, "./src/cme.js"),
 	Path.join(__dirname, "./src/global.js"),
+	Path.join(__dirname, "./src/test_env.js"),
+	Path.join(__dirname, "./src/knowledgebase/knowledgebase.js"),
 ]
+
 const options = {
 	outDir: "./dist",
 	outFile: "cme.js",
 	target: "browser",
-	minify: true,
+	minify: false,
 	cache: true,
 	cacheDir: ".cache",
 	hmr: false,

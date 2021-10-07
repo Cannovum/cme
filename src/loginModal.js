@@ -30,10 +30,9 @@ export default function createLoginModal() {
 
 	// * Functions
 	function closeModal() {
-		console.log("closed")
 		if (modal == null) {
-			console.log("Modal close error")
-			console.log(modal)
+			console.error("Modal close error")
+			console.error(modal)
 			return
 		}
 		// modal.classList.remove("active")
@@ -44,8 +43,8 @@ export default function createLoginModal() {
 
 function openModal() {
 	if (modal == null) {
-		console.log("Modal open error")
-		console.log(modal)
+		console.error("Modal open error")
+		console.error(modal)
 		return
 	}
 	modal.classList.add("active")

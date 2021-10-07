@@ -8,6 +8,7 @@ import Player from "@vimeo/player"
 import createVideoView from "./videoView.js"
 import createCurriculum from "./curriculumComponent.js"
 import createSidebar from "./sidebar.js"
+import { getCoursesData } from "./helpers"
 
 const curriculumWrapper = document.querySelector(".curriulum_c_wrapper")
 const viewWrapper = document.querySelector("#spa-view-toggle")
@@ -101,7 +102,7 @@ async function router(url = window.location.origin + window.location.pathname) {
 		{
 			name: "overview",
 			view: async () => {
-				routeDefault(data)
+				routeDefault(data, courseID)
 			},
 		},
 		{
@@ -114,7 +115,7 @@ async function router(url = window.location.origin + window.location.pathname) {
 			name: "notFound",
 			view: async () => {
 				console.log("not found")
-				routeDefault(data)
+				routeDefault(data, courseID)
 			},
 		},
 	]
@@ -129,50 +130,6 @@ async function router(url = window.location.origin + window.location.pathname) {
 	match.view() // Run view function
 }
 
-async function getCoursesData(courseID, lesson = null) {
-	lesson = lesson ? lesson - 1 : null // Lesson starts with 1, but the index with 0, so x = x -1
-	const localData = localStorage.getItem(courseID)
-	if (localData) {
-		fetchData(courseID, lesson)
-		return lesson != null
-			? JSON.parse(localData)[lesson]
-			: JSON.parse(localData)
-	} else {
-		const res = await fetchData(courseID, lesson)
-		return res
-	}
-
-	async function fetchData(courseID, lesson) {
-		return axios
-			.post("https://enpegcr0bq40jrt.m.pipedream.net", { course: courseID })
-			.then((res) => {
-				const decompressedCSV = decompress(res.data.data.toString(), {
-					inputEncoding: "StorageBinaryString",
-				})
-				const parsed = parse(decompressedCSV, {
-					header: true,
-					dynamicTyping: true,
-				})
-				if (parsed.errors.length > 0) {
-					console.error("Error when parsing data:")
-					console.error(parsed.errors)
-				}
-				localStorage.setItem(courseID, JSON.stringify(parsed.data))
-				return parsed.data
-			})
-			.catch((err) => {
-				console.error("Thumbnail fetching failed")
-				if (err.response) {
-					console.error(err.response.status)
-					console.error(err.response.data)
-					console.error(err.response.headers)
-				} else if (err.request) console.error(err.request)
-				else console.error(err.message)
-			})
-		return result
-	}
-}
-
 async function resetVideoView() {
 	// Hide the wrapper for other views and unloads its contents
 	viewWrapper.classList.add("hide")
@@ -180,8 +137,10 @@ async function resetVideoView() {
 }
 
 async function routeVideo(data, queries) {
+	// Switches to Video View
+
 	resetVideoView()
-	resetSidebar(data)
+	resetSidebar(data, courseID)
 
 	// * Modify tabs unless they are already modified
 	const activeTab = document.querySelector("#spa_main_content .w--tab-active")
@@ -198,11 +157,11 @@ async function routeVideo(data, queries) {
 	viewWrapper.classList.remove("hide")
 }
 
-async function resetSidebar(data) {
+async function resetSidebar(data, courseID) {
 	sidebar.replaceChildren(await createSidebar(data, courseID))
 }
 
-async function routeDefault(data) {
+async function routeDefault(data, courseID) {
 	resetVideoView()
-	resetSidebar(data)
+	resetSidebar(data, courseID)
 }

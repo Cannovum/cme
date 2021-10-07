@@ -11,23 +11,23 @@ export default async function createSidebar(data, courseID) {
 	})
 
 	if (!loggedIn) {
-		const loginBox = sidebar.appendChild(createLoginbox())
+		const loginBox = sidebar.appendChild(_createLoginbox())
 	}
 
 	switch (view) {
 		case "watch":
-			sidebar.appendChild(createCurricuum(data, queries))
+			sidebar.appendChild(_createCurricuum(data, queries))
 			break
 
 		default:
-			if (!loggedIn) sidebar.appendChild(createFeatureList(data))
-			else sidebar.appendChild(await createLastWatch(courseID))
+			if (!loggedIn) sidebar.appendChild(_createFeatureList(data))
+			else sidebar.appendChild(await _createLastWatch(data, courseID))
 	}
 
 	return sidebar
 }
 
-function createLoginbox() {
+function _createLoginbox() {
 	// * Wrapper
 	const wrapper = document.createElement("div")
 	wrapper.classList.add("sticky_meta_lecture")
@@ -57,7 +57,7 @@ function createLoginbox() {
 	return wrapper
 }
 
-function createCurricuum(data, queries) {
+function _createCurricuum(data, queries) {
 	const activeLesson = Number(queries.get("lesson"))
 	const activeLessonIndex = activeLesson - 1
 	const activeChapter = data[activeLessonIndex].chapter
@@ -154,7 +154,7 @@ function createCurricuum(data, queries) {
 	return curriculum
 }
 
-function createFeatureList(data) {
+function _createFeatureList(data) {
 	// * Feature list
 	// List-item text | icon source
 	const list = [
@@ -199,13 +199,15 @@ function createFeatureList(data) {
 	return list
 }
 
-async function createLastWatch(courseID) {
+async function _createLastWatch(data, courseID) {
+	const memberData = (await getMsMetaData())[courseID]?.lastWatched
+
 	const {
 		episode,
-		vimeo_link = false,
+		vimeo_link: vimeoLink = false,
 		name,
 		chapter_title: chapterTitle,
-	} = (await getMsMetaData())[courseID].lastWatched
+	} = memberData || data[1]
 
 	const wrapper = document.createElement("div")
 	wrapper.classList.add("cme-sidebar_continue-wrapper")
@@ -216,15 +218,18 @@ async function createLastWatch(courseID) {
 	const link = url.href
 
 	let html = ""
-	if (vimeo_link) {
-		const thumbnail = await getVimeoThumbnail(vimeo_link)
+
+	if (vimeoLink) {
+		const thumbnailLink = await getVimeoThumbnail(episode, courseID)
 		html = `
 				<div class="">
 				<a href="${link}" class="w-inline-block">
-				<div class="h3 mb8 mt0">Weiter anschauen</div>
+				<div class="h3 mb8 mt0">${
+					memberData ? "Weiter anschauen" : "Jetzt beginnen"
+				}</div>
 			</a>
 			<a href="${link}" class="w-inline-block">
-			<img src="${thumbnail}" loading="lazy" class="cme-sidebar_continue-thumb">
+			<img src="${thumbnailLink}}" loading="lazy" class="cme-sidebar_continue-thumb" id="cme-sidebar-thumbnail">
 			</a>
 			<a href="${link}" class="w-inline-block">
 				<div class="black bold mb4 hover-primary">${name}</div>
