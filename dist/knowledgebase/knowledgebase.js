@@ -19452,7 +19452,7 @@ function _buildGlossar() {
                 entry.forEach(function (e) {
                   var _e$previousElementSib;
 
-                  wrapper.append(e);
+                  wrapper.append(e); // Set the letter
 
                   if (((_e$previousElementSib = e.previousElementSibling) === null || _e$previousElementSib === void 0 ? void 0 : _e$previousElementSib.letter) != letter) {
                     var letterBox = letterContainer.cloneNode(true);
@@ -19470,7 +19470,10 @@ function _buildGlossar() {
                 e.querySelector(".div-block-140").remove();
                 var result = e.cloneNode(true);
                 result.titel = name;
-                result.letter = name[0].toUpperCase();
+                result.letter = name[0].toUpperCase(); // Add the show more functionallity
+
+                var textWrapper = result.querySelector(".glossar-text-wrapper");
+                createShowMore(textWrapper);
                 return result;
               }).reduce(function (acc, e) {
                 acc[e.letter] = acc[e.letter] ? [].concat(_toConsumableArray(acc[e.letter]), [e]) : [e];
@@ -19500,21 +19503,39 @@ function _buildGlossar() {
   return _buildGlossar.apply(this, arguments);
 }
 
-function sortByText_(a, b) {
-  var nameA = a.toUpperCase(); // ignore upper and lowercase
+function createShowMore(element) {
+  var icon = element.querySelector(".glossar-text-hider_icon");
+  var textContent = element.querySelector(".glossar-text-content");
+  var hider = element.querySelector(".glossar-text-hider");
+  icon.addEventListener("click", function (e) {
+    if (element.clicked !== 1) {
+      showText();
+    } else {
+      hideText();
+    }
+  });
+  hider.addEventListener("click", function (e) {
+    console.log("x", element.clicked);
+    if (element.clicked !== 1) showText(e);
+  });
 
-  var nameB = b.toUpperCase(); // ignore upper and lowercase
-
-  if (nameA < nameB) {
-    return -1;
+  function showText() {
+    textContent.style.height = "auto";
+    hider.classList.add("inactive");
+    icon.classList.add("rotated");
+    element.clicked = 1;
+    console.log(element.clicked);
+    console.log("show");
   }
 
-  if (nameA > nameB) {
-    return 1;
-  } // names must be equal
-
-
-  return 0;
+  function hideText() {
+    textContent.style.height = "168px";
+    hider.classList.remove("inactive");
+    icon.classList.remove("rotated");
+    element.clicked = 0;
+    console.log(element.clicked);
+    console.log("hide");
+  }
 }
 },{"lodash":"../node_modules/lodash/lodash.js"}],"knowledgebase/searchKnowledgebase.js":[function(require,module,exports) {
 "use strict";
@@ -19552,7 +19573,6 @@ function _createSearch() {
               if (searchTerm.length === 0) {
                 activateTabs();
                 closeSearch(resultWrapper, inputBox);
-                console.log("c");
               } else {
                 deactivateTabs();
                 resultWrapper.replaceChildren();
@@ -19570,6 +19590,7 @@ function _createSearch() {
               }
 
               document.addEventListener("click", function (e) {
+                // Close search if user clicked on a link
                 if (e.target.matches("a")) {
                   closeSearch(resultWrapper, inputBox);
                 }

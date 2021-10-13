@@ -11,7 +11,6 @@ export default async function createSearch() {
 		if (searchTerm.length === 0) {
 			activateTabs()
 			closeSearch(resultWrapper, inputBox)
-			console.log("c")
 		} else {
 			deactivateTabs()
 			resultWrapper.replaceChildren()
@@ -34,6 +33,7 @@ export default async function createSearch() {
 		}
 
 		document.addEventListener("click", (e) => {
+			// Close search if user clicked on a link
 			if (e.target.matches("a")) {
 				closeSearch(resultWrapper, inputBox)
 			}

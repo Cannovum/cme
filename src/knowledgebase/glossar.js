@@ -20,6 +20,11 @@ export default async function buildGlossar() {
 				const result = e.cloneNode(true)
 				result.titel = name
 				result.letter = name[0].toUpperCase()
+
+				// Add the show more functionallity
+				const textWrapper = result.querySelector(".glossar-text-wrapper")
+				createShowMore(textWrapper)
+
 				return result
 			})
 			.reduce((acc, e) => {
@@ -34,6 +39,7 @@ export default async function buildGlossar() {
 		Object.entries(glossar).forEach(([letter, entry]) => {
 			entry.forEach((e) => {
 				wrapper.append(e)
+				// Set the letter
 				if (e.previousElementSibling?.letter != letter) {
 					const letterBox = letterContainer.cloneNode(true)
 					letterBox.querySelector(".letter").innerText = letter
@@ -70,16 +76,41 @@ export default async function buildGlossar() {
 	}
 }
 
-function sortByText_(a, b) {
-	var nameA = a.toUpperCase() // ignore upper and lowercase
-	var nameB = b.toUpperCase() // ignore upper and lowercase
-	if (nameA < nameB) {
-		return -1
-	}
-	if (nameA > nameB) {
-		return 1
+function createShowMore(element) {
+	const icon = element.querySelector(".glossar-text-hider_icon")
+	const textContent = element.querySelector(".glossar-text-content")
+	const hider = element.querySelector(".glossar-text-hider")
+
+	icon.addEventListener("click", (e) => {
+		if (element.clicked !== 1) {
+			showText()
+		} else {
+			hideText()
+		}
+	})
+
+	hider.addEventListener("click", (e) => {
+		console.log("x", element.clicked)
+		if (element.clicked !== 1) showText(e)
+	})
+
+	function showText() {
+		textContent.style.height = "auto"
+		hider.classList.add("inactive")
+		icon.classList.add("rotated")
+
+		element.clicked = 1
+		console.log(element.clicked)
+		console.log("show")
 	}
 
-	// names must be equal
-	return 0
+	function hideText() {
+		textContent.style.height = "168px"
+		hider.classList.remove("inactive")
+		icon.classList.remove("rotated")
+
+		element.clicked = 0
+		console.log(element.clicked)
+		console.log("hide")
+	}
 }
