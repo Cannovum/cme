@@ -2,42 +2,74 @@ import createLoginModal from "./loginModal"
 
 MemberStack.onReady.then((member) => {
 	// * MS stuff
-	if (member.loggedIn) {
-		// Redirect
-		const redirect = sessionStorage.getItem("redirect")
-		if (redirect) {
-			console.log("redirect user")
-			$(".dc_login-btn").hide()
-			sessionStorage.removeItem("redirect")
-			window.location.assign(redirect) // Redirect user
-		}
-		// Hide login button
-		$("[data-dc-login]").hide()
-	} else {
-		$("[data-dc-logout]").hide()
-	}
+	redirectUser()
+	hideAuthButton()
+
+	const loginButton = $(".dc_login-btn")
+	const lougoutButton = $("[data-dc-logout]")
+	const sessionRedirect = "login-redirect"
+
+	addHrefToLoginButton()
 
 	// ? Global click listener for login / logout buttons
 	document.body.addEventListener("click", (e) => {
-		if (
-			e.target.matches("[data-dc-login]") ||
-			e.target.parentNode.matches("[data-dc-login]")
-		) {
-			if (e.target.matches("[data-redirect]")) {
-				sessionStorage.setItem(
-					"redirect",
-					e.target.getAttribute("data-redirect")
-				)
-			} else {
-				sessionStorage.setItem("redirect", window.location.href)
+		checkLoginClick()
+		checkLogoutClick()
+
+		function checkLoginClick() {
+			if (
+				!e.target.matches("[data-dc-login]") ||
+				!e.target.parentNode.matches("[data-dc-login]")
+			) {
+				return
 			}
-			e.preventDefault()
-			document.body.append(createLoginModal())
-		} else if (
-			e.target.matches("[data-dc-logout]") ||
-			e.target.parentNode.matches("[data-dc-logout]")
-		) {
+
+			let redirectLink = e.target.getAttribute("data-login-redirect")
+			if (redirectLink) {
+				switch (redirectLink) {
+					case "stay":
+						redirectLink = window.location.href
+						break
+
+					case "home":
+						redirectLink = window.location.origin
+						break
+				}
+
+				sessionStorage.setItem(sessionRedirect, redirectLink)
+			}
+
+			document.body.append(createLoginModal(sessionRedirect))
+		}
+
+		function checkLogoutClick() {
+			if (
+				!e.target.matches("[data-dc-logout]") ||
+				!e.target.parentNode.matches("[data-dc-logout]")
+			) {
+				return
+			}
 			MemberStack.logout()
 		}
 	})
+
+	function redirectUser() {
+		if (!member.loggedIn) return
+		const loginRedirect = sessionStorage.getItem(sessionRedirect)
+		if (loginRedirect && loginRedirect !== "dont") {
+			console.log("redirect user")
+			sessionStorage.removeItem(sessionRedirect)
+			window.location.assign(loginRedirect) // Redirect user
+		}
+	}
+
+	function hideAuthButton() {
+		if (member.loggedIn) loginButton.hide()
+		else lougoutButton.hide()
+	}
+
+	function addHrefToLoginButton() {
+		if (!loginButton.attr("href")) return
+		loginButton.attr("href", loginButton.attr("data-login-redirect"))
+	}
 })

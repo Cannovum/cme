@@ -1,4 +1,4 @@
-export default function createLoginModal() {
+export default function createLoginModal(sessionRedirect = null) {
 	const modalWrapper = document.createElement("div")
 	modalWrapper.classList.add(
 		"modal_wrapper-" + (Math.random() + 1).toString(36).substring(2)
@@ -35,8 +35,9 @@ export default function createLoginModal() {
 			console.error(modal)
 			return
 		}
-		// modal.classList.remove("active")
-		// overlay.classList.remove("active")
+		modal.classList.remove("active")
+		overlay.classList.remove("active")
+		if (sessionRedirect) sessionStorage.removeItem(sessionRedirect)
 		setTimeout(() => modalWrapper.remove(), 125)
 	}
 }
