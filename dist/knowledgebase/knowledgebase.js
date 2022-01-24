@@ -19774,7 +19774,8 @@ function activateTabs() {
 
 function trunctateMatch(searchTerm, text) {
   searchTerm = searchTerm.toLowerCase();
-  var padding = 85;
+  var padding = Math.ceil(85 - searchTerm.length / 2); // ! Checking
+
   var indexMatch = text.toLowerCase().indexOf(searchTerm);
   if (indexMatch === -1) searchTerm = text[0].toLocaleLowerCase(); // Content text does not match searchTerm. Instead use first letter of text
 

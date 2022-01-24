@@ -12572,6 +12572,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.getMsMetaData = getMsMetaData;
 exports.getVimeoThumbnail = getVimeoThumbnail;
 exports.getCoursesData = getCoursesData;
+exports.fetchData = fetchData;
 
 var _axios = _interopRequireDefault(require("axios"));
 
@@ -12618,7 +12619,7 @@ function _getMsMetaData() {
                 }, _callee);
               }));
 
-              return function (_x4) {
+              return function (_x5) {
                 return _ref.apply(this, arguments);
               };
             }()));
@@ -12710,101 +12711,98 @@ function getCoursesData(_x3) {
 }
 
 function _getCoursesData() {
-  _getCoursesData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(courseID) {
+  _getCoursesData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(courseID) {
     var lesson,
         localData,
         res,
-        fetchData,
-        _fetchData,
-        _args5 = arguments;
-
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+        _args4 = arguments;
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
-            _fetchData = function _fetchData3() {
-              _fetchData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(courseID) {
-                var lesson,
-                    _args4 = arguments;
-                return regeneratorRuntime.wrap(function _callee4$(_context4) {
-                  while (1) {
-                    switch (_context4.prev = _context4.next) {
-                      case 0:
-                        lesson = _args4.length > 1 && _args4[1] !== undefined ? _args4[1] : null;
-                        return _context4.abrupt("return", _axios.default.post("https://enpegcr0bq40jrt.m.pipedream.net", {
-                          course: courseID
-                        }).then(function (res) {
-                          var decompressedCSV = (0, _lzutf.decompress)(res.data.data.toString(), {
-                            inputEncoding: "StorageBinaryString"
-                          });
-                          var parsed = (0, _papaparse.parse)(decompressedCSV, {
-                            header: true,
-                            dynamicTyping: true
-                          });
-
-                          if (parsed.errors.length > 0) {
-                            console.error("Error when parsing data:");
-                            console.error(parsed.errors);
-                          }
-
-                          localStorage.setItem(courseID, JSON.stringify(parsed.data));
-                          return lesson !== null ? parsed.data[lesson - 1] : parsed.data;
-                        }).catch(function (err) {
-                          console.error("Course Data fetching failed");
-                          console.error({
-                            courseID: courseID,
-                            lesson: lesson
-                          });
-
-                          if (err.response) {
-                            console.error("Status:", err.response.status);
-                            console.error(err.response.data);
-                            console.error(err.response.headers);
-                          } else if (err.request) console.error(err.request);else console.error(err.message);
-                        }));
-
-                      case 3:
-                      case "end":
-                        return _context4.stop();
-                    }
-                  }
-                }, _callee4);
-              }));
-              return _fetchData.apply(this, arguments);
-            };
-
-            fetchData = function _fetchData2(_x5) {
-              return _fetchData.apply(this, arguments);
-            };
-
-            lesson = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : null;
+            lesson = _args4.length > 1 && _args4[1] !== undefined ? _args4[1] : null;
             lesson = lesson ? lesson - 1 : null; // Lesson starts with 1, but the index with 0, so x = x -1
 
             localData = localStorage.getItem(courseID);
 
             if (!localData) {
-              _context5.next = 9;
+              _context4.next = 7;
               break;
             }
 
-            return _context5.abrupt("return", lesson != null ? JSON.parse(localData)[lesson] : JSON.parse(localData));
+            return _context4.abrupt("return", lesson != null ? JSON.parse(localData)[lesson] : JSON.parse(localData));
 
-          case 9:
-            _context5.next = 11;
+          case 7:
+            _context4.next = 9;
             return fetchData(courseID, lesson);
 
-          case 11:
-            res = _context5.sent;
-            return _context5.abrupt("return", res);
+          case 9:
+            res = _context4.sent;
+            return _context4.abrupt("return", res);
 
-          case 13:
+          case 11:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4);
+  }));
+  return _getCoursesData.apply(this, arguments);
+}
+
+function fetchData(_x4) {
+  return _fetchData.apply(this, arguments);
+}
+
+function _fetchData() {
+  _fetchData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(courseID) {
+    var lesson,
+        _args5 = arguments;
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            lesson = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : null;
+            return _context5.abrupt("return", _axios.default.post("https://enpegcr0bq40jrt.m.pipedream.net", {
+              course: courseID
+            }).then(function (res) {
+              var decompressedCSV = (0, _lzutf.decompress)(res.data.data.toString(), {
+                inputEncoding: "StorageBinaryString"
+              });
+              var parsed = (0, _papaparse.parse)(decompressedCSV, {
+                header: true,
+                dynamicTyping: true
+              });
+
+              if (parsed.errors.length > 0) {
+                console.error("Error when parsing data:");
+                console.error(parsed.errors);
+              }
+
+              localStorage.setItem(courseID, JSON.stringify(parsed.data));
+              return lesson !== null ? parsed.data[lesson - 1] : parsed.data;
+            }).catch(function (err) {
+              console.error("Course Data fetching failed");
+              console.error({
+                courseID: courseID,
+                lesson: lesson
+              });
+
+              if (err.response) {
+                console.error("Status:", err.response.status);
+                console.error(err.response.data);
+                console.error(err.response.headers);
+              } else if (err.request) console.error(err.request);else console.error(err.message);
+            }));
+
+          case 2:
           case "end":
             return _context5.stop();
         }
       }
     }, _callee5);
   }));
-  return _getCoursesData.apply(this, arguments);
+  return _fetchData.apply(this, arguments);
 }
 },{"axios":"../node_modules/axios/index.js","lzutf8":"../node_modules/lzutf8/build/production/lzutf8.js","papaparse":"../node_modules/papaparse/papaparse.min.js"}],"sidebar.js":[function(require,module,exports) {
 "use strict";
@@ -13131,48 +13129,65 @@ var sidebar = document.querySelector(".sticky_meta_lecture");
 var curriulumStartpage = document.querySelector("#curriculum_2");
 var courseID = document.querySelector("#course_data").getAttribute("data-course") || // Erhalte KursID, geprintet von Webflow (Metadatei im CMS)
 console.error("Course ID was not found in document");
+
+_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+  return regeneratorRuntime.wrap(function _callee$(_context) {
+    while (1) {
+      switch (_context.prev = _context.next) {
+        case 0:
+          (0, _helpers.fetchData)(courseID);
+
+        case 1:
+        case "end":
+          return _context.stop();
+      }
+    }
+  }, _callee);
+}))(); // Fetch course data at the beginning once to force a refresh, just in case the data is outdated
+
+
 window.addEventListener("popstate", function (e) {
   // * Automatic Routing
   router(window.location.href);
 });
-document.addEventListener("DOMContentLoaded", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+document.addEventListener("DOMContentLoaded", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
   var data, curri, playerURL, playerDiv, overviewPlayer, tabs;
-  return regeneratorRuntime.wrap(function _callee$(_context) {
+  return regeneratorRuntime.wrap(function _callee2$(_context2) {
     while (1) {
-      switch (_context.prev = _context.next) {
+      switch (_context2.prev = _context2.next) {
         case 0:
           // *** Gets executed after the page loaded *** //
           // * Route to the correct view by using current link
           // (example: view="video" is set and it takes you to the video view)
           router(window.location.href); // * Create curriculum
 
-          _context.next = 3;
+          _context2.next = 3;
           return (0, _helpers.getCoursesData)(courseID);
 
         case 3:
-          data = _context.sent;
-          _context.next = 6;
+          data = _context2.sent;
+          _context2.next = 6;
           return (0, _curriculumComponent.default)(data);
 
         case 6:
-          curri = _context.sent;
-          _context.t0 = curriculumWrapper;
-          _context.next = 10;
+          curri = _context2.sent;
+          _context2.t0 = curriculumWrapper;
+          _context2.next = 10;
           return (0, _curriculumComponent.default)(data);
 
         case 10:
-          _context.t1 = _context.sent;
+          _context2.t1 = _context2.sent;
 
-          _context.t0.appendChild.call(_context.t0, _context.t1);
+          _context2.t0.appendChild.call(_context2.t0, _context2.t1);
 
-          _context.t2 = curriulumStartpage;
-          _context.next = 15;
+          _context2.t2 = curriulumStartpage;
+          _context2.next = 15;
           return (0, _curriculumComponent.default)(data);
 
         case 15:
-          _context.t3 = _context.sent;
+          _context2.t3 = _context2.sent;
 
-          _context.t2.replaceChildren.call(_context.t2, _context.t3);
+          _context2.t2.replaceChildren.call(_context2.t2, _context2.t3);
 
           // * Construct overview video in overview tab
           playerURL = document.querySelector("#overview_video").getAttribute("data-vimeo-url");
@@ -13215,10 +13230,10 @@ document.addEventListener("DOMContentLoaded", /*#__PURE__*/_asyncToGenerator( /*
 
         case 23:
         case "end":
-          return _context.stop();
+          return _context2.stop();
       }
     }
-  }, _callee);
+  }, _callee2);
 })));
 
 function navigateTo() {
@@ -13226,27 +13241,27 @@ function navigateTo() {
 }
 
 function _navigateTo() {
-  _navigateTo = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+  _navigateTo = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
     var url,
         replace,
         stateData,
-        _args2 = arguments;
-    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        _args3 = arguments;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
-            url = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : window.location.origin + window.location.pathname;
-            replace = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : false;
-            stateData = _args2.length > 2 && _args2[2] !== undefined ? _args2[2] : null;
+            url = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : window.location.origin + window.location.pathname;
+            replace = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : false;
+            stateData = _args3.length > 2 && _args3[2] !== undefined ? _args3[2] : null;
             history.pushState(null, null, url);
             router(url);
 
           case 5:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
       }
-    }, _callee2);
+    }, _callee3);
   }));
   return _navigateTo.apply(this, arguments);
 }
@@ -13256,41 +13271,41 @@ function router() {
 }
 
 function _router() {
-  _router = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+  _router = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
     var url,
         queries,
         data,
         routes,
         queryView,
         match,
-        _args6 = arguments;
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        _args7 = arguments;
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context7.prev = _context7.next) {
           case 0:
-            url = _args6.length > 0 && _args6[0] !== undefined ? _args6[0] : window.location.origin + window.location.pathname;
+            url = _args7.length > 0 && _args7[0] !== undefined ? _args7[0] : window.location.origin + window.location.pathname;
             queries = new URL(url).searchParams;
-            _context6.next = 4;
+            _context7.next = 4;
             return (0, _helpers.getCoursesData)(courseID);
 
           case 4:
-            data = _context6.sent;
+            data = _context7.sent;
             routes = [{
               name: "overview",
               view: function () {
-                var _view = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-                  return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                var _view = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+                  return regeneratorRuntime.wrap(function _callee4$(_context4) {
                     while (1) {
-                      switch (_context3.prev = _context3.next) {
+                      switch (_context4.prev = _context4.next) {
                         case 0:
                           routeDefault(data, courseID);
 
                         case 1:
                         case "end":
-                          return _context3.stop();
+                          return _context4.stop();
                       }
                     }
-                  }, _callee3);
+                  }, _callee4);
                 }));
 
                 function view() {
@@ -13302,19 +13317,19 @@ function _router() {
             }, {
               name: "watch",
               view: function () {
-                var _view2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-                  return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                var _view2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+                  return regeneratorRuntime.wrap(function _callee5$(_context5) {
                     while (1) {
-                      switch (_context4.prev = _context4.next) {
+                      switch (_context5.prev = _context5.next) {
                         case 0:
                           routeVideo(data, queries);
 
                         case 1:
                         case "end":
-                          return _context4.stop();
+                          return _context5.stop();
                       }
                     }
-                  }, _callee4);
+                  }, _callee5);
                 }));
 
                 function view() {
@@ -13326,20 +13341,20 @@ function _router() {
             }, {
               name: "notFound",
               view: function () {
-                var _view3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-                  return regeneratorRuntime.wrap(function _callee5$(_context5) {
+                var _view3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+                  return regeneratorRuntime.wrap(function _callee6$(_context6) {
                     while (1) {
-                      switch (_context5.prev = _context5.next) {
+                      switch (_context6.prev = _context6.next) {
                         case 0:
                           console.log("not found");
                           routeDefault(data, courseID);
 
                         case 2:
                         case "end":
-                          return _context5.stop();
+                          return _context6.stop();
                       }
                     }
-                  }, _callee5);
+                  }, _callee6);
                 }));
 
                 function view() {
@@ -13362,10 +13377,10 @@ function _router() {
 
           case 9:
           case "end":
-            return _context6.stop();
+            return _context7.stop();
         }
       }
-    }, _callee6);
+    }, _callee7);
   }));
   return _router.apply(this, arguments);
 }
@@ -13375,10 +13390,10 @@ function resetVideoView() {
 }
 
 function _resetVideoView() {
-  _resetVideoView = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+  _resetVideoView = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+    return regeneratorRuntime.wrap(function _callee8$(_context8) {
       while (1) {
-        switch (_context7.prev = _context7.next) {
+        switch (_context8.prev = _context8.next) {
           case 0:
             // Hide the wrapper for other views and unloads its contents
             viewWrapper.classList.add("hide");
@@ -13386,10 +13401,10 @@ function _resetVideoView() {
 
           case 2:
           case "end":
-            return _context7.stop();
+            return _context8.stop();
         }
       }
-    }, _callee7);
+    }, _callee8);
   }));
   return _resetVideoView.apply(this, arguments);
 }
@@ -13399,11 +13414,11 @@ function routeVideo(_x, _x2) {
 }
 
 function _routeVideo() {
-  _routeVideo = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(data, queries) {
+  _routeVideo = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(data, queries) {
     var activeTab, activeTabContent;
-    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+    return regeneratorRuntime.wrap(function _callee9$(_context9) {
       while (1) {
-        switch (_context8.prev = _context8.next) {
+        switch (_context9.prev = _context9.next) {
           case 0:
             // Switches to Video View
             resetVideoView();
@@ -13414,23 +13429,23 @@ function _routeVideo() {
             activeTabContent = document.querySelector("#spa_main_content .w--current");
             if (activeTabContent) activeTabContent.classList.remove("w--current"); // * Load video view
 
-            _context8.t0 = viewContainer;
-            _context8.next = 9;
+            _context9.t0 = viewContainer;
+            _context9.next = 9;
             return (0, _videoView.default)(data[Number(queries.get("lesson")) - 1], courseID);
 
           case 9:
-            _context8.t1 = _context8.sent;
+            _context9.t1 = _context9.sent;
 
-            _context8.t0.replaceChildren.call(_context8.t0, _context8.t1);
+            _context9.t0.replaceChildren.call(_context9.t0, _context9.t1);
 
             viewWrapper.classList.remove("hide");
 
           case 12:
           case "end":
-            return _context8.stop();
+            return _context9.stop();
         }
       }
-    }, _callee8);
+    }, _callee9);
   }));
   return _routeVideo.apply(this, arguments);
 }
@@ -13440,26 +13455,26 @@ function resetSidebar(_x3, _x4) {
 }
 
 function _resetSidebar() {
-  _resetSidebar = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(data, courseID) {
-    return regeneratorRuntime.wrap(function _callee9$(_context9) {
+  _resetSidebar = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(data, courseID) {
+    return regeneratorRuntime.wrap(function _callee10$(_context10) {
       while (1) {
-        switch (_context9.prev = _context9.next) {
+        switch (_context10.prev = _context10.next) {
           case 0:
-            _context9.t0 = sidebar;
-            _context9.next = 3;
+            _context10.t0 = sidebar;
+            _context10.next = 3;
             return (0, _sidebar.default)(data, courseID);
 
           case 3:
-            _context9.t1 = _context9.sent;
+            _context10.t1 = _context10.sent;
 
-            _context9.t0.replaceChildren.call(_context9.t0, _context9.t1);
+            _context10.t0.replaceChildren.call(_context10.t0, _context10.t1);
 
           case 5:
           case "end":
-            return _context9.stop();
+            return _context10.stop();
         }
       }
-    }, _callee9);
+    }, _callee10);
   }));
   return _resetSidebar.apply(this, arguments);
 }
@@ -13469,20 +13484,20 @@ function routeDefault(_x5, _x6) {
 }
 
 function _routeDefault() {
-  _routeDefault = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(data, courseID) {
-    return regeneratorRuntime.wrap(function _callee10$(_context10) {
+  _routeDefault = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(data, courseID) {
+    return regeneratorRuntime.wrap(function _callee11$(_context11) {
       while (1) {
-        switch (_context10.prev = _context10.next) {
+        switch (_context11.prev = _context11.next) {
           case 0:
             resetVideoView();
             resetSidebar(data, courseID);
 
           case 2:
           case "end":
-            return _context10.stop();
+            return _context11.stop();
         }
       }
-    }, _callee10);
+    }, _callee11);
   }));
   return _routeDefault.apply(this, arguments);
 }

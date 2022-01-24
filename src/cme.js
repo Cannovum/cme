@@ -8,7 +8,7 @@ import Player from "@vimeo/player"
 import createVideoView from "./videoView.js"
 import createCurriculum from "./curriculumComponent.js"
 import createSidebar from "./sidebar.js"
-import { getCoursesData } from "./helpers"
+import { getCoursesData, fetchData } from "./helpers"
 
 const curriculumWrapper = document.querySelector(".curriulum_c_wrapper")
 const viewWrapper = document.querySelector("#spa-view-toggle")
@@ -18,6 +18,10 @@ const curriulumStartpage = document.querySelector("#curriculum_2")
 const courseID =
 	document.querySelector("#course_data").getAttribute("data-course") || // Erhalte KursID, geprintet von Webflow (Metadatei im CMS)
 	console.error("Course ID was not found in document")
+
+;(async function () {
+	fetchData(courseID)
+})() // Fetch course data at the beginning once to force a refresh, just in case the data is outdated
 
 window.addEventListener("popstate", (e) => {
 	// * Automatic Routing

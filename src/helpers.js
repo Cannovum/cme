@@ -63,35 +63,34 @@ export async function getCoursesData(courseID, lesson = null) {
 		const res = await fetchData(courseID, lesson)
 		return res
 	}
+}
 
-	async function fetchData(courseID, lesson = null) {
-		return axios
-			.post("https://enpegcr0bq40jrt.m.pipedream.net", { course: courseID })
-			.then((res) => {
-				const decompressedCSV = decompress(res.data.data.toString(), {
-					inputEncoding: "StorageBinaryString",
-				})
-				const parsed = parse(decompressedCSV, {
-					header: true,
-					dynamicTyping: true,
-				})
-				if (parsed.errors.length > 0) {
-					console.error("Error when parsing data:")
-					console.error(parsed.errors)
-				}
-				localStorage.setItem(courseID, JSON.stringify(parsed.data))
-				return lesson !== null ? parsed.data[lesson - 1] : parsed.data
+export async function fetchData(courseID, lesson = null) {
+	return axios
+		.post("https://enpegcr0bq40jrt.m.pipedream.net", { course: courseID })
+		.then((res) => {
+			const decompressedCSV = decompress(res.data.data.toString(), {
+				inputEncoding: "StorageBinaryString",
 			})
-			.catch((err) => {
-				console.error("Course Data fetching failed")
-				console.error({ courseID, lesson })
-				if (err.response) {
-					console.error("Status:", err.response.status)
-					console.error(err.response.data)
-					console.error(err.response.headers)
-				} else if (err.request) console.error(err.request)
-				else console.error(err.message)
+			const parsed = parse(decompressedCSV, {
+				header: true,
+				dynamicTyping: true,
 			})
-		return result
-	}
+			if (parsed.errors.length > 0) {
+				console.error("Error when parsing data:")
+				console.error(parsed.errors)
+			}
+			localStorage.setItem(courseID, JSON.stringify(parsed.data))
+			return lesson !== null ? parsed.data[lesson - 1] : parsed.data
+		})
+		.catch((err) => {
+			console.error("Course Data fetching failed")
+			console.error({ courseID, lesson })
+			if (err.response) {
+				console.error("Status:", err.response.status)
+				console.error(err.response.data)
+				console.error(err.response.headers)
+			} else if (err.request) console.error(err.request)
+			else console.error(err.message)
+		})
 }
