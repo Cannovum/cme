@@ -14,13 +14,13 @@ export async function getVimeoThumbnail(episode, courseID) {
 	// Returns the link to the image
 
 	return (
-		getThumbnail(episode) ||
+		getThumbnailLocalStorage(episode) ||
 		axios
 			.get("https://enaprj2nqk3s67o.m.pipedream.net", {
 				params: {
 					vimeoID: (await getCoursesData(courseID, episode)).vimeo_link
 						.split("/")
-						.slice(-1)[0],
+						.at(-1),
 				},
 			})
 			.then((res) => {
@@ -38,7 +38,7 @@ export async function getVimeoThumbnail(episode, courseID) {
 			})
 	)
 
-	function getThumbnail(episode) {
+	function getThumbnailLocalStorage(episode) {
 		return JSON.parse(localStorage.getItem(courseID))[episode - 1]
 			?.thumbnailLink
 	}

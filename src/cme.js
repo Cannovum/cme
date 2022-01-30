@@ -1,14 +1,14 @@
 //https://mocki.io/v1/3172ef8d-e1b7-4769-b4a0-f22918057fb1
 //https://enpegcr0bq40jrt.m.pipedream.net
 //------------------------------------------- -------------
-import { decompress } from "lzutf8"
-import { parse } from "papaparse"
-import axios from "axios"
 import Player from "@vimeo/player"
 import createVideoView from "./videoView.js"
 import createCurriculum from "./curriculumComponent.js"
 import createSidebar from "./sidebar.js"
 import { getCoursesData, fetchData } from "./helpers"
+import tippy from "tippy.js"
+import "tippy.js/dist/tippy.css"
+import "./global.css"
 
 const curriculumWrapper = document.querySelector(".curriulum_c_wrapper")
 const viewWrapper = document.querySelector("#spa-view-toggle")
@@ -19,7 +19,7 @@ const courseID =
 	document.querySelector("#course_data").getAttribute("data-course") || // Erhalte KursID, geprintet von Webflow (Metadatei im CMS)
 	console.error("Course ID was not found in document")
 
-;(async function () {
+;(() => {
 	fetchData(courseID)
 })() // Fetch course data at the beginning once to force a refresh, just in case the data is outdated
 
@@ -43,16 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	curriulumStartpage.replaceChildren(await createCurriculum(data))
 
 	// * Construct overview video in overview tab
-	const playerURL = document
-		.querySelector("#overview_video")
-		.getAttribute("data-vimeo-url")
-	const playerDiv = document.querySelector("#overview_video")
-	const overviewPlayer = new Player(playerDiv, {
-		byline: false,
-		title: false,
-		width: 687,
-		url: playerURL,
-	})
+	const overviewPlayer = createOverviewVideo()
 
 	// * Add eventlistener to the tabs
 	const tabs = document.querySelectorAll("[data-spa_tab]")
@@ -87,6 +78,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 			navigateTo(e.target.href)
 		}
 	})
+
+	function createOverviewVideo() {
+		const playerURL = document
+			.querySelector("#overview_video")
+			.getAttribute("data-vimeo-url")
+		const playerWrapper = document.querySelector("#overview_video")
+
+		playerWrapper.classList.add("vimeo_wrapper")
+		const overviewPlayer = new Player(playerWrapper, {
+			byline: false,
+			title: false,
+			width: 687,
+			url: playerURL,
+		})
+		// return overviewPlayer
+	}
 })
 
 async function navigateTo(
@@ -163,9 +170,11 @@ async function routeVideo(data, queries) {
 
 async function resetSidebar(data, courseID) {
 	sidebar.replaceChildren(await createSidebar(data, courseID))
+	tippy("[data-tippy-content]") //Activate tippy.js tooltips
 }
 
 async function routeDefault(data, courseID) {
 	resetVideoView()
 	resetSidebar(data, courseID)
+	tippy("[data-tippy-content]") //Activate tippy.js tooltips
 }

@@ -29,7 +29,7 @@ export default async function createSearch() {
 						)
 						resultWrapper.append(result)
 				  })
-				: resultWrapper.append("No results found")
+				: resultWrapper.append("Keine Ergebnisse gefunden")
 		}
 
 		document.addEventListener("click", (e) => {

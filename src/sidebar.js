@@ -65,10 +65,29 @@ function _createCurricuum(data, queries) {
 	// *** Build DOM
 	const curriculum = document.createElement("div")
 	curriculum.classList.add("sticky_curriculum")
-	const currTitle = document.createElement("h2")
-	currTitle.classList.add("normal-text", "bold", "black", "mt0")
-	currTitle.innerText = "Curriculum"
-	curriculum.appendChild(currTitle)
+
+	const titleWrapper = document.createElement("div")
+	titleWrapper.classList.add("sticky_curriculum-title_wrapper")
+	const titleHeading = document.createElement("h2")
+	titleHeading.classList.add("normal-text", "bold", "black", "m0")
+	titleHeading.innerText = "Curriculum"
+	const dropdownArrow = document.createElement("img")
+	dropdownArrow.classList.add("tablet-show", "ml16")
+	dropdownArrow.src =
+		"https://uploads-ssl.webflow.com/60926f7c9d2b2e26dc68b384/6165669c3d9f3e6465a1cb08_chevron-down%20-black.svg"
+	titleWrapper.append(titleHeading, dropdownArrow)
+
+	const contentWrapper = document.createElement("div")
+	contentWrapper.classList.add(
+		"sticky_curriculum-content_wrapper",
+		"sticky_curriculum-content-wrapper_hide"
+	)
+
+	titleWrapper.onclick = () => {
+		contentWrapper.classList.toggle("sticky_curriculum-content-wrapper_hide")
+		dropdownArrow.classList.toggle("rotate-180")
+	}
+	curriculum.append(titleWrapper, contentWrapper)
 
 	// Sort data in chapters
 	const chapters = data.reduce((acc, curr) => {
@@ -87,6 +106,7 @@ function _createCurricuum(data, queries) {
 		// ** Erstellung der Curriculum Elemente
 
 		// * Wrapper
+
 		const chapterWrapper = document.createElement("div")
 		chapterWrapper.classList.add("cme-sidebar_chapter-container")
 
@@ -95,7 +115,7 @@ function _createCurricuum(data, queries) {
 		titleWrapper.classList.add("cme-sidebar_chapter-title-container")
 
 		const title = document.createElement("h3")
-		title.classList.add("normal-text", "bold", "mtb0", "black")
+		title.classList.add("normal-text", "bold", "mtb0", "black", "break-word")
 		title.innerText = chapter[0]["chapter_title"]
 
 		if (activeChapter == index) {
@@ -110,53 +130,71 @@ function _createCurricuum(data, queries) {
 
 		chapterWrapper.append(titleWrapper, lessonsWrapper)
 
-		chapter.forEach((arrayLesson) => {
+		chapter.forEach((lesson) => {
 			//For each lesson in chapter
 
-			const isActiveLeson = arrayLesson.episode == activeLesson
+			const isActiveLeson = lesson.episode == activeLesson
 
 			// * Lektionsblock
-			const lessonContainer = document.createElement("a")
-			lessonContainer.classList.add(
-				"cme-sidebar_curr-li",
-				"w-inline-block",
-				"hover-primary"
-			)
-			if (isActiveLeson) lessonContainer.classList.add("primary")
-			lessonContainer.setAttribute("data-spa-link", true)
-
-			// * HREF bauen
-			const url = new URL(window.location.href)
-			url.searchParams.set("view", "watch")
-			url.searchParams.set("lesson", arrayLesson.episode)
-			lessonContainer.href = url.href
-
-			// * Inner Text (Lesson name)
-			const text = document.createTextNode(arrayLesson.name)
-
-			const lesson = document.createElement("div")
-			lesson.classList.add("lesson_episode")
-			lesson.innerText = "Lektion " + arrayLesson.episode
-
-			const icon = document.createElement("img")
-			icon.classList.add("curr-movie_icon")
-
-			icon.src = isActiveLeson
-				? "https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/610aa7f70957136062c1ece8_ic_outline-movie.svg" // active icon
-				: "https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/60c8bbec6ce11150a3e29131_ic_outline-movie.grey-.svg" // inactive icon
+			const lessonContainer = createLessonEntry_(isActiveLeson, lesson)
 
 			lessonsWrapper.append(lessonContainer)
-			lessonContainer.append(text, icon)
 		})
-		curriculum.append(chapterWrapper)
+		contentWrapper.append(chapterWrapper)
 	})
 
 	return curriculum
+
+	function createLessonEntry_(isActiveLeson, lesson) {
+		const lessonContainer = document.createElement("a")
+		lessonContainer.classList.add(
+			"cme-sidebar_curr-li",
+			"w-inline-block",
+			"hover-primary"
+		)
+		if (isActiveLeson) lessonContainer.classList.add("text-primary")
+
+		// * HREF bauen
+		// * Inner Text (Lesson name)
+		const text = document.createElement("span")
+		text.innerText = lesson.name
+
+		const lessonText = document.createElement("div")
+		lessonText.classList.add("lesson_episode")
+		lessonText.innerText = "Lektion " + lesson.episode
+
+		const icon = document.createElement("img")
+		icon.classList.add("curr-movie_icon")
+
+		icon.src = isActiveLeson
+			? "https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/610aa7f70957136062c1ece8_ic_outline-movie.svg" // active icon
+			: "https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/60c8bbec6ce11150a3e29131_ic_outline-movie.grey-.svg" // inactive icon
+
+		if (lesson.unlocked) {
+			const url = new URL(window.location.href)
+			url.searchParams.set("view", "watch")
+			url.searchParams.set("lesson", lesson.episode)
+			lessonContainer.href = url.href
+			lessonContainer.setAttribute("data-spa-link", true)
+		} else {
+			lessonContainer.style.opacity = "0.62"
+			lessonContainer.style.cursor = "default"
+			text.setAttribute(
+				"data-tippy-content",
+				"Diese Lektion wird erst erscheinen"
+			)
+		}
+		lessonContainer.append(text, icon)
+
+		return lessonContainer
+	}
 }
 
 function _createFeatureList(data) {
 	// * Feature list
 	// List-item text | icon source
+	data = data.filter((element) => element.name !== null)
+
 	const list = [
 		[
 			"Verfügbar",
@@ -229,7 +267,7 @@ async function _createLastWatch(data, courseID) {
 				}</div>
 			</a>
 			<a href="${link}" class="w-inline-block">
-			<img src="${thumbnailLink}}" loading="lazy" class="cme-sidebar_continue-thumb" id="cme-sidebar-thumbnail">
+			<img src="${thumbnailLink}" loading="lazy" class="cme-sidebar_continue-thumb" id="cme-sidebar-thumbnail">
 			</a>
 			<a href="${link}" class="w-inline-block">
 				<div class="black bold mb4 hover-primary">${name}</div>
