@@ -62,10 +62,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 			// Route to overview (using default value)
 			const searchParams = new URLSearchParams(window.location.search)
+
 			if (searchParams.get("view") && searchParams.get("view") != "overview") {
-				navigateTo()
+				navigateTo() // Push new state to searchParams
 			} else {
-				router()
+				router() // Just switch view
 			}
 		})
 	})
@@ -92,7 +93,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 			width: 687,
 			url: playerURL,
 		})
-		// return overviewPlayer
+
+		return overviewPlayer
 	}
 })
 

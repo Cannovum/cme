@@ -19,8 +19,8 @@ export async function getVimeoThumbnail(episode, courseID) {
 			.get("https://enaprj2nqk3s67o.m.pipedream.net", {
 				params: {
 					vimeoID: (await getCoursesData(courseID, episode)).vimeo_link
-						.split("/")
-						.at(-1),
+						.toString()
+						.match(/(?<=\/|\b)[0-9]{6,9}(?!\w)(?=\/|\b)/)[0],
 				},
 			})
 			.then((res) => {
