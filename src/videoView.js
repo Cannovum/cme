@@ -45,6 +45,7 @@ export default async function createVideoView(lesson, courseID, courseData) {
 	wrapper.append(playerContainer, videoDesc)
 
 	return wrapper
+	////////////////////////////////
 
 	function updateMsLastWatch(lesson, courseID) {
 		MemberStack.onReady.then(async (member) => {

@@ -181,7 +181,7 @@ function _createCurricuum(data, queries) {
 			lessonContainer.style.cursor = "default"
 			text.setAttribute(
 				"data-tippy-content",
-				"Diese Lektion wird erst erscheinen"
+				"Diese Lektion wird erst noch erscheinen"
 			)
 		}
 		lessonContainer.append(text, icon)
@@ -207,10 +207,6 @@ function _createFeatureList(data) {
 		[
 			"Unlimitierter Zugang für immer",
 			"https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/60c8bbec08c9087ba58d2003_mdi_infinity.grey-.svg",
-		],
-		[
-			"Zertifikat nach Abschluss",
-			"https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/60c8bbecf711d5da59e4b098_ic_outline-assignment.grey-.svg",
 		],
 		[
 			"Online und in Ihrer eigenen Geschwindigkeit",
