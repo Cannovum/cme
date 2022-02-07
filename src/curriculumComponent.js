@@ -93,7 +93,7 @@ function createLessonListElement_(lessonData) {
 		lessonContainer.style.cursor = "default"
 		text.setAttribute(
 			"data-tippy-content",
-			"Diese Lektion wird erst erscheinen"
+			"Diese Lektion wird erst noch erscheinen"
 		)
 	}
 

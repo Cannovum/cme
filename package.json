@@ -5,7 +5,7 @@
 	"main": "app.js",
 	"scripts": {
 		"dev": "parcel ./src/cme.js",
-		"build": "parcel build ./src/cme.js"
+		"build": "parcel build ./src/cme.js && aws s3 sync dist/ s3://cannovum-cme"
 	},
 	"repository": {
 		"type": "git",
