@@ -1,6 +1,7 @@
 # Custom #
 /old.old
 index.html
+dist/
 
 # Compiled source #
 ###################
