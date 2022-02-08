@@ -13,7 +13,7 @@ export default async function createSearch() {
 			closeSearch(resultWrapper, inputBox)
 		} else {
 			deactivateTabs()
-			resultWrapper.replaceChildren()
+			resultWrapper.innerHTML = ""
 			resultWrapper.style.opacity = "100%"
 			searchableData = getSearchableData(elements, searchableData)
 			const matchedData = filterData(searchableData, searchTerm)
@@ -149,7 +149,7 @@ function closeSearch(resultsElement, searchBox) {
 	searchBox.value = ""
 	resultsElement.style.transition = "all 200ms ease"
 	resultsElement.style.opacity = "0%"
-	setTimeout(() => resultsElement.replaceChildren(), 2200)
+	setTimeout(() => (resultsElement.innerHTML = ""), 2200)
 }
 
 function switchTab(tab) {

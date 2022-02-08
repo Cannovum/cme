@@ -40,7 +40,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const curri = await createCurriculum(data)
 	curriculumWrapper.appendChild(await createCurriculum(data))
 	// Create curriculum at the startpage
-	curriulumStartpage.replaceChildren(await createCurriculum(data))
+	curriulumStartpage.innerHTML = ""
+	curriulumStartpage.append(await createCurriculum(data))
 
 	// * Construct overview video in overview tab
 	const overviewPlayer = createOverviewVideo()
@@ -146,7 +147,7 @@ async function router(url = window.location.origin + window.location.pathname) {
 async function resetVideoView() {
 	// Hide the wrapper for other views and unloads its contents
 	viewWrapper.classList.add("hide")
-	viewContainer.replaceChildren()
+	viewContainer.innerHTML = ""
 }
 
 async function routeVideo(data, queries) {
@@ -164,14 +165,16 @@ async function routeVideo(data, queries) {
 	if (activeTabContent) activeTabContent.classList.remove("w--current")
 
 	// * Load video view
-	viewContainer.replaceChildren(
+	viewContainer.innerHTML = ""
+	viewContainer.append(
 		await createVideoView(data[Number(queries.get("lesson")) - 1], courseID)
 	)
 	viewWrapper.classList.remove("hide")
 }
 
 async function resetSidebar(data, courseID) {
-	sidebar.replaceChildren(await createSidebar(data, courseID))
+	sidebar.innerHTML = ""
+	sidebar.append(await createSidebar(data, courseID))
 	tippy("[data-tippy-content]") //Activate tippy.js tooltips
 }
 

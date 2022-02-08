@@ -4,8 +4,7 @@
 	"description": "Single-Page-Application code for CME",
 	"main": "app.js",
 	"scripts": {
-		"dev": "parcel ./src/cme.js",
-		"build": "parcel build ./src/cme.js && aws s3 sync dist/ s3://cannovum-cme"
+		"build": "parcel build && aws s3 sync dist/ s3://cannovum-cme"
 	},
 	"repository": {
 		"type": "git",
@@ -20,11 +19,30 @@
 		"@vimeo/player": "^2.16.0",
 		"axios": "^0.21.1",
 		"lzutf8": "^0.6.0",
-		"papaparse": "^5.3.1"
+		"papaparse": "^5.3.1",
+		"parcel": "^2.2.1"
 	},
 	"dependencies": {
 		"global.css": "^1.1.0",
 		"parcel-bundler": "^1.12.5",
 		"tippy.js": "^6.3.7"
+	},
+	"browserslist": [
+		"> 0.5%",
+		"last 2 versions",
+		"not dead",
+		"Safari 13"
+	],
+	"targets": {
+		"default": {
+			"source": [
+				"./src/cme.js",
+				"./src/global.js",
+				"./src/knowledgebase/knowledgebase.js"
+			],
+			"engines": {
+				"browsers": "IE 11"
+			}
+		}
 	}
 }

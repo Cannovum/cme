@@ -1,12 +1,12 @@
 import createLoginModal from "./loginModal"
 
 MemberStack.onReady.then((member) => {
-	// * MS stuff
+	//  MS stuff
 	redirectUser()
 	hideAuthButton()
 
-	const loginButton = $(".dc_login-btn")
-	const lougoutButton = $("[data-dc-logout]")
+	const loginButton = $("#nav-dc-login-btn")
+	const logoutButton = $("#dc-logout")
 	const sessionRedirect = "login-redirect"
 
 	addHrefToLoginButton()
@@ -64,8 +64,8 @@ MemberStack.onReady.then((member) => {
 	}
 
 	function hideAuthButton() {
-		if (member.loggedIn) loginButton.hide()
-		else lougoutButton.hide()
+		if (member.loggedIn && loginButton) loginButton?.hide()
+		else logoutButton?.hide()
 	}
 
 	function addHrefToLoginButton() {
