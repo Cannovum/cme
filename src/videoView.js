@@ -81,8 +81,10 @@ export default async function createVideoView(lesson, courseID, courseData) {
 				if (!member.loggedIn) {
 					player.unload()
 					playerDiv.innerHTML = `
-				<p>Bitte loggen Sie sich ein um das Video zu sehen</p>
+				<p>Bitte loggen Sie sich als Arzt oder Apotheker auf DocCheck ein um Zugriff auf dieses Video zu erhalten.</p>
+				<p>Dies ist erforderlich aufgrund des Heilmittelwerbegesetzes und den Vorschriften zu Betäubungsmitteln bei verschreibungspflichtigen Produkten wie Cannabis.</p>
 				<iframe align="left" frameborder="0" scrolling="no" width="467" height="231" name="dc_login_iframe" id="dc_login_iframe" src="https://login.doccheck.com/code/de/2000000016834/login_xl/" ><a href="https://login.doccheck.com/code/de/2000000016834/login_xl/" target="_blank">LOGIN</a></iframe>`
+					playerDiv.classList.remove("vimeo_wrapper")
 
 					sessionStorage.setItem("redirect", window.location.href)
 				}
