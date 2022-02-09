@@ -44,6 +44,7 @@ function _createLoginbox() {
 	buttonWrapper.classList.add("button", "w100p", "shadow-lv2", "w-inline-block")
 	buttonWrapper.href = window.location.origin + "/member/denied" // https://cme-testt.webflow.io/member/denied
 	buttonWrapper.setAttribute("data-dc-login", true)
+	buttonWrapper.setAttribute("data-login-redirect", window.location.href)
 	const buttonInner = document.createElement("div")
 	buttonInner.classList.add("button-inner")
 	buttonInner.innerText = "Login"
