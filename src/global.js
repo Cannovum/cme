@@ -14,10 +14,9 @@ MemberStack.onReady.then((member) => {
 	// ? Global click listener for login / logout buttons
 	document.body.addEventListener("click", (e) => {
 		checkLoginClick(e)
-		checkLogoutClick()
+		checkLogoutClick(e)
 
 		function checkLoginClick(e) {
-			console.log("Clicked registered")
 			if (
 				e.target.matches("[data-dc-login]") ||
 				e.target.matches("#fachkreis-login") ||
@@ -48,15 +47,17 @@ MemberStack.onReady.then((member) => {
 			}
 		}
 
-		function checkLogoutClick() {
+		function checkLogoutClick(e) {
 			if (
-				!e.target.matches("[data-dc-logout]") ||
-				!e.target.parentNode.matches("[data-dc-logout]")
+				e.target.matches("[data-dc-logout]") ||
+				e.target.parentNode.matches("[data-dc-logout]") ||
+				e.target.matches("#dc-logout") ||
+				e.target.parentNode.matches("#dc-logout")
 			) {
-				return
+				e.preventDefault()
+				console.log("Matched login logout link")
+				MemberStack.logout()
 			}
-			console.log("Matched login logout link")
-			MemberStack.logout()
 		}
 	})
 
