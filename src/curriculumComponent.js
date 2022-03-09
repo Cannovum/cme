@@ -1,3 +1,5 @@
+import { checkIsLoggedIn } from "./helpers"
+
 export default async function createCurriculum(data) {
 	let result = document.createElement("div")
 
@@ -19,8 +21,8 @@ export default async function createCurriculum(data) {
 			// ** Erstellung der HTML Elemente
 			const chapterElement = createChapterEntry_(chapter)
 
-			chapter.forEach((lesson) => {
-				const lessonElement = createLessonListElement_(lesson)
+			chapter.forEach(async (lesson) => {
+				const lessonElement = await createLessonListElement_(lesson)
 
 				chapterElement.addLessonElement(lessonElement)
 			})
@@ -60,9 +62,10 @@ function createChapterEntry_(chapterData) {
 	}
 }
 
-function createLessonListElement_(lessonData) {
+async function createLessonListElement_(lessonData) {
 	// * Lektionsblock
-	const unlocked = lessonData.unlocked
+	const isLoggedIn = await checkIsLoggedIn()
+	const { unlocked, public: isPublic } = lessonData
 
 	const lessonContainer = document.createElement("a")
 	lessonContainer.classList.add("curr-li", "w-inline-block")
@@ -77,9 +80,17 @@ function createLessonListElement_(lessonData) {
 
 	const icon = document.createElement("img")
 	icon.classList.add("curr-movie_icon")
-	icon.src = unlocked
-		? "https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/60c8bbec6ce11150a3e29131_ic_outline-movie.grey-.svg"
-		: "https://uploads-ssl.webflow.com/60926f7c9d2b2e26dc68b384/60926f7c9d2b2e24a068b3c1_calendar_today.svg"
+
+	//Set icon
+	if (unlocked && isPublic)
+		icon.src =
+			"https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/60c8bbec6ce11150a3e29131_ic_outline-movie.grey-.svg"
+	else if (unlocked && !isPublic)
+		icon.src =
+			"https://uploads-ssl.webflow.com/60926f7c9d2b2e26dc68b384/6225dbf11e4d4c1d921353f2_ic_outline-lock%20grey.svg"
+	else
+		icon.src =
+			"https://uploads-ssl.webflow.com/60926f7c9d2b2e26dc68b384/60926f7c9d2b2e24a068b3c1_calendar_today.svg"
 
 	if (unlocked === true) {
 		lessonContainer.setAttribute("data-spa-link", true) // Its a CME link
@@ -88,6 +99,16 @@ function createLessonListElement_(lessonData) {
 		url.searchParams.set("view", "watch")
 		url.searchParams.set("lesson", lessonData.episode)
 		lessonContainer.href = url.href
+		if (isPublic === 0 && !isLoggedIn) {
+			text.setAttribute(
+				"data-tippy-content",
+				"Diese Lektion benötigt einen DocCheck Login"
+			)
+			icon.setAttribute(
+				"data-tippy-content",
+				"Diese Lektion benötigt einen DocCheck Login"
+			)
+		}
 	} else {
 		lessonContainer.style.opacity = "0.62"
 		lessonContainer.style.cursor = "default"

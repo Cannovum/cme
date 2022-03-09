@@ -94,3 +94,8 @@ export async function fetchData(courseID, lesson = null) {
 			else console.error(err.message)
 		})
 }
+
+export const checkIsLoggedIn = async () =>
+	MemberStack.onReady.then((member) => {
+		return member.loggedIn
+	})

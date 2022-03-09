@@ -24,12 +24,11 @@ MemberStack.onReady.then((member) => {
 				e.target.parentNode.matches("#fachkreis-login")
 			) {
 				e.preventDefault()
-				console.log("Matched login link")
+				// console.log("Matched login link")
 
 				let redirectLink =
 					e.target.getAttribute("data-login-redirect") ||
 					e.target.parentNode.getAttribute("data-login-redirect")
-				console.log("redirect link: " + redirectLink)
 				if (redirectLink) {
 					switch (redirectLink) {
 						case "stay":
@@ -55,7 +54,7 @@ MemberStack.onReady.then((member) => {
 				e.target.parentNode.matches("#dc-logout")
 			) {
 				e.preventDefault()
-				console.log("Matched login logout link")
+				// console.log("Matched login logout link")
 				MemberStack.logout()
 			}
 		}
@@ -64,29 +63,26 @@ MemberStack.onReady.then((member) => {
 	function redirectUser(redirectKey) {
 		const loginRedirect = sessionStorage.getItem(redirectKey)
 		if (loginRedirect === null) {
-			console.log(redirectKey)
-			console.log(sessionStorage.getItem(loginRedirect))
-			console.log("No redirect link")
+			// console.log("No redirect link")
 			return
 		}
 		if (!member.loggedIn) {
-			console.log("Redirect started but user is not logged in")
+			// console.log("Redirect started but user is not logged in")
 			sessionStorage.removeItem(sessionStorageRedirectKey)
 			return
 		}
 
-		console.log("redirect user to: " + loginRedirect)
+		// console.log("redirect user to: " + loginRedirect)
 		sessionStorage.removeItem(sessionStorageRedirectKey)
 		window.location.assign(loginRedirect) // Redirect user
 	}
 
 	function hideAuthButton() {
-		if (member.loggedIn && loginButton) loginButton?.hide()
-		else logoutButton?.hide()
+		if (!member.loggedIn) logoutButton?.hide()
 	}
 
 	function addHrefToLoginButton() {
-		if (!loginButton.attr("href")) return
+		if (!loginButton.attr("href") && loginButton.attr("href") !== "#") return
 		loginButton.attr("href", loginButton.attr("data-login-redirect"))
 	}
 })
