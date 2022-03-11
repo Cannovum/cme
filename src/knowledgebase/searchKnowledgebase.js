@@ -13,7 +13,7 @@ export default async function createSearch() {
 			closeSearch(resultWrapper, inputBox)
 		} else {
 			deactivateTabs()
-			resultWrapper.innerHTML = ""
+			resultWrapper.replaceChildren()
 			resultWrapper.style.opacity = "100%"
 			searchableData = getSearchableData(elements, searchableData)
 			const matchedData = filterData(searchableData, searchTerm)

@@ -37,7 +37,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 	// * Create curriculum
 	const data = await getCoursesData(courseID)
-	const curri = await createCurriculum(data)
 	curriculumWrapper.appendChild(await createCurriculum(data))
 	// Create curriculum at the startpage
 	curriulumStartpage.innerHTML = ""
@@ -141,14 +140,14 @@ async function router(url = window.location.origin + window.location.pathname) {
 		  }) || routes.find((route) => route.name === "notFound") // if not found, use notFound
 		: routes[0] // routes.find((route) => route.view === "overview") // else use overview view
 
-	match.view() // Run view function
+	await match.view() // Run view function
 	tippy("[data-tippy-content]")
 }
 
 async function removeVideoView() {
 	// Hide the wrapper for other views and unloads its contents
 	viewWrapper.classList.add("hide")
-	viewContainer.innerHTML = ""
+	viewContainer.replaceChildren()
 }
 
 async function routeVideo(data, queries) {
@@ -165,8 +164,7 @@ async function routeVideo(data, queries) {
 	if (activeTabContent) activeTabContent.classList.remove("w--current")
 
 	// * Load video view
-	viewContainer.innerHTML = ""
-	viewContainer.append(
+	viewContainer.replaceChildren(
 		await createVideoView(data[Number(queries.get("lesson")) - 1], courseID)
 	)
 	viewWrapper.classList.remove("hide")
@@ -174,8 +172,7 @@ async function routeVideo(data, queries) {
 }
 
 async function resetSidebar(data, courseID) {
-	sidebar.innerHTML = ""
-	sidebar.append(await createSidebar(data, courseID))
+	sidebar.replaceChildren(await createSidebar(data, courseID))
 	tippy("[data-tippy-content]") //Activate tippy.js tooltips
 }
 

@@ -4,10 +4,10 @@
 	"description": "Single-Page-Application code for CME",
 	"main": "app.js",
 	"scripts": {
-		"test": "concurrently \"http-server ./dist/ -p 1234\" \"npm run build:watch\"",
+		"dev": "concurrently \"http-server ./dist/ -p 1234\" \"npm run build:watch\"",
 		"build": "node build.js",
 		"build:watch": "nodemon build.js",
-		"deploy": "parcel build && aws s3 sync dist/ s3://cannovum-cme"
+		"deploy": "node build.js && aws s3 sync dist/ s3://cannovum-cme"
 	},
 	"repository": {
 		"type": "git",
@@ -46,7 +46,7 @@
 				"./src/knowledgebase/knowledgebase.js"
 			],
 			"engines": {
-				"browsers": "IE 11"
+				"browsers": "not dead"
 			}
 		}
 	},

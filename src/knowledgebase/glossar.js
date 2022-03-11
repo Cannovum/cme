@@ -52,7 +52,7 @@ export default async function buildGlossar() {
 
 	function createGlossarLinks(glossar) {
 		const container = document.querySelector(".div-block-139")
-		container.innerHTML = ""
+		container.replaceChildren()
 		// prettier-ignore
 		const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 

@@ -65,7 +65,7 @@ function createChapterEntry_(chapterData) {
 async function createLessonListElement_(lessonData) {
 	// * Lektionsblock
 	const isLoggedIn = await checkIsLoggedIn()
-	const { unlocked, public: isPublic } = lessonData
+	const { unlocked: unlockedDate, public: isPublic } = lessonData
 
 	const lessonContainer = document.createElement("a")
 	lessonContainer.classList.add("curr-li", "w-inline-block")
@@ -82,17 +82,17 @@ async function createLessonListElement_(lessonData) {
 	icon.classList.add("curr-movie_icon")
 
 	//Set icon
-	if (unlocked && isPublic)
+	if (!unlockedDate)
 		icon.src =
-			"https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/60c8bbec6ce11150a3e29131_ic_outline-movie.grey-.svg"
-	else if (unlocked && !isPublic)
+			"https://uploads-ssl.webflow.com/60926f7c9d2b2e26dc68b384/60926f7c9d2b2e24a068b3c1_calendar_today.svg"
+	else if (!isPublic && !isLoggedIn)
 		icon.src =
 			"https://uploads-ssl.webflow.com/60926f7c9d2b2e26dc68b384/6225dbf11e4d4c1d921353f2_ic_outline-lock%20grey.svg"
 	else
 		icon.src =
-			"https://uploads-ssl.webflow.com/60926f7c9d2b2e26dc68b384/60926f7c9d2b2e24a068b3c1_calendar_today.svg"
+			"https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/60c8bbec6ce11150a3e29131_ic_outline-movie.grey-.svg" // Fully unlocked
 
-	if (unlocked === true) {
+	if (unlockedDate === true) {
 		lessonContainer.setAttribute("data-spa-link", true) // Its a CME link
 		// * HREF build
 		const url = new URL(window.location.href)

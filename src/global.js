@@ -1,20 +1,21 @@
 import createLoginModal from "./loginModal"
 
-MemberStack.onReady.then((member) => {
+MemberStack.onReady.then(({ loggedIn }) => {
 	//  MS stuff
 
-	const loginButton = $("#nav-dc-login-btn")
-	const logoutButton = $("#dc-logout")
-	const sessionStorageRedirectKey = "redirect"
+	const sessionStorageRedirectKey = "login-redirect"
 
 	redirectUser(sessionStorageRedirectKey)
-	hideAuthButton()
-	addHrefToLoginButton()
+	setAuthButtons()
+	if (!loggedIn) {
+		addHrefToLoginButton()
+		removeProtectedElements()
+	}
 
 	// ? Global click listener for login / logout buttons
 	document.body.addEventListener("click", (e) => {
-		checkLoginClick(e)
-		checkLogoutClick(e)
+		if (loggedIn) checkLogoutClick(e)
+		else checkLoginClick(e)
 
 		function checkLoginClick(e) {
 			if (
@@ -62,27 +63,64 @@ MemberStack.onReady.then((member) => {
 
 	function redirectUser(redirectKey) {
 		const loginRedirect = sessionStorage.getItem(redirectKey)
+		if (!loginRedirect) return
+
 		if (loginRedirect === null) {
-			// console.log("No redirect link")
+			console.log("No redirect link")
 			return
 		}
-		if (!member.loggedIn) {
-			// console.log("Redirect started but user is not logged in")
-			sessionStorage.removeItem(sessionStorageRedirectKey)
+		if (!loggedIn) {
+			console.log("Redirect started but user is not logged in")
 			return
 		}
 
-		// console.log("redirect user to: " + loginRedirect)
+		console.log("redirect user to: " + loginRedirect)
 		sessionStorage.removeItem(sessionStorageRedirectKey)
 		window.location.assign(loginRedirect) // Redirect user
 	}
 
-	function hideAuthButton() {
-		if (!member.loggedIn) logoutButton?.hide()
+	async function setAuthButtons() {
+		if (loggedIn) {
+			const loginButtons = getAuthButtons("login")
+			for (const loginButton of loginButtons) {
+				loginButton.remove()
+			}
+		} else {
+			const logoutButtons = getAuthButtons("logout")
+			for (const logoutButton of logoutButtons) {
+				logoutButton.remove()
+			}
+		}
 	}
 
-	function addHrefToLoginButton() {
-		if (!loginButton.attr("href") && loginButton.attr("href") !== "#") return
-		loginButton.attr("href", loginButton.attr("data-login-redirect"))
+	async function addHrefToLoginButton() {
+		const loginButtons = getAuthButtons("login")
+		for (const loginButton of loginButtons) {
+			if (
+				!loginButton?.hasAttribute("href") &&
+				loginButton?.getAttribute("href") !== "#"
+			)
+				return
+
+			loginButton.setAttribute(
+				"href",
+				loginButton.getAttribute("data-login-redirect") ?? window.location.href
+			) // Set redirect link for the login process. Redirect to the same page if data is not set on the elemnt
+		}
+	}
+
+	async function removeProtectedElements() {
+		const elements = document.querySelectorAll("[data-dc-protected]")
+		for (const ele of elements) {
+			ele.remove()
+		}
 	}
 })
+
+function getAuthButtons(type) {
+	if (type !== "login" && type !== "logout")
+		console.error("Invalid argument error:", type)
+	const query = type === "login" ? "[data-dc-login]" : "[data-dc-logout]"
+
+	return document.querySelectorAll(query)
+}

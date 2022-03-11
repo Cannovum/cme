@@ -12,7 +12,7 @@ const options = {
 	outDir: "./dist",
 	outFile: "cme.js",
 	target: "browser",
-	minify: true,
+	minify: false,
 	cache: true,
 	cacheDir: ".cache",
 	hmr: false,

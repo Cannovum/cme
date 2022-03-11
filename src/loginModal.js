@@ -37,7 +37,10 @@ export default function createLoginModal(sessionRedirect = null) {
 		}
 		modal.classList.remove("active")
 		overlay.classList.remove("active")
-		if (sessionRedirect) sessionStorage.removeItem(sessionRedirect)
+		if (sessionRedirect) {
+			// console.log("Session redirect deleted, because modal is closing")
+			sessionStorage.removeItem(sessionRedirect)
+		}
 		setTimeout(() => modalWrapper.remove(), 125)
 	}
 }
