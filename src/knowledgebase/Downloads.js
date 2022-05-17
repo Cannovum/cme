@@ -11,6 +11,7 @@ export default async function modifiyDownloadCards() {
 			const div = document.createElement("div")
 			div.innerText = title
 			div.style.marginRight = "16px"
+			div.style.whiteSpace = "nowrap"
 			toc.appendChild(div)
 		}
 	}

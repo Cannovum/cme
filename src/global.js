@@ -70,11 +70,11 @@ MemberStack.onReady.then(({ loggedIn }) => {
 			return
 		}
 		if (!loggedIn) {
-			console.log("Redirect started but user is not logged in")
+			// console.log("Redirect started but user is not logged in")
 			return
 		}
 
-		console.log("redirect user to: " + loginRedirect)
+		// console.log("redirect user to: " + loginRedirect)
 		sessionStorage.removeItem(sessionStorageRedirectKey)
 		window.location.assign(loginRedirect) // Redirect user
 	}
