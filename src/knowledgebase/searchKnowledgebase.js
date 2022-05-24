@@ -149,7 +149,7 @@ function closeSearch(resultsElement, searchBox) {
 	searchBox.value = ""
 	resultsElement.style.transition = "all 200ms ease"
 	resultsElement.style.opacity = "0%"
-	setTimeout(() => resultsElement.replaceChildren(), 2200)
+	setTimeout(() => (resultsElement.innerHTML = ""), 2200)
 }
 
 function switchTab(tab) {

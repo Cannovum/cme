@@ -1,26 +1,24 @@
-import { getMsMetaData, getVimeoThumbnail } from "./helpers"
+import { getMsMetaData, getVimeoThumbnail, checkIsLoggedIn } from "./helpers"
 
 export default async function createSidebar(data, courseID) {
+	const isLoggedIn = await checkIsLoggedIn()
+
 	const queries = new URL(window.location.href).searchParams
 	const view = queries.get("view")
 
 	const sidebar = document.createElement("div") // Main	element
 
-	let loggedIn = await MemberStack.onReady.then((member) => {
-		return member.loggedIn
-	})
-
-	if (!loggedIn) {
+	if (!isLoggedIn) {
 		const loginBox = sidebar.appendChild(_createLoginbox())
 	}
 
 	switch (view) {
 		case "watch":
-			sidebar.appendChild(_createCurricuum(data, queries))
+			sidebar.appendChild(await _createCurricuum(data, queries))
 			break
 
 		default:
-			if (!loggedIn) sidebar.appendChild(_createFeatureList(data))
+			if (!isLoggedIn) sidebar.appendChild(_createFeatureList(data))
 			else sidebar.appendChild(await _createLastWatch(data, courseID))
 	}
 
@@ -44,6 +42,7 @@ function _createLoginbox() {
 	buttonWrapper.classList.add("button", "w100p", "shadow-lv2", "w-inline-block")
 	buttonWrapper.href = window.location.origin + "/member/denied" // https://cme-testt.webflow.io/member/denied
 	buttonWrapper.setAttribute("data-dc-login", true)
+	buttonWrapper.setAttribute("data-login-redirect", window.location.href)
 	const buttonInner = document.createElement("div")
 	buttonInner.classList.add("button-inner")
 	buttonInner.innerText = "Login"
@@ -57,7 +56,7 @@ function _createLoginbox() {
 	return wrapper
 }
 
-function _createCurricuum(data, queries) {
+async function _createCurricuum(data, queries) {
 	const activeLesson = Number(queries.get("lesson"))
 	const activeLessonIndex = activeLesson - 1
 	const activeChapter = data[activeLessonIndex].chapter
@@ -130,13 +129,13 @@ function _createCurricuum(data, queries) {
 
 		chapterWrapper.append(titleWrapper, lessonsWrapper)
 
-		chapter.forEach((lesson) => {
+		chapter.forEach(async (lesson) => {
 			//For each lesson in chapter
 
 			const isActiveLeson = lesson.episode == activeLesson
 
 			// * Lektionsblock
-			const lessonContainer = createLessonEntry_(isActiveLeson, lesson)
+			const lessonContainer = await createLessonEntry_(isActiveLeson, lesson)
 
 			lessonsWrapper.append(lessonContainer)
 		})
@@ -145,7 +144,9 @@ function _createCurricuum(data, queries) {
 
 	return curriculum
 
-	function createLessonEntry_(isActiveLeson, lesson) {
+	async function createLessonEntry_(isActiveLeson, lesson) {
+		const isLoggedIn = await checkIsLoggedIn()
+
 		const lessonContainer = document.createElement("a")
 		lessonContainer.classList.add(
 			"cme-sidebar_curr-li",
@@ -166,9 +167,18 @@ function _createCurricuum(data, queries) {
 		const icon = document.createElement("img")
 		icon.classList.add("curr-movie_icon")
 
-		icon.src = isActiveLeson
-			? "https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/610aa7f70957136062c1ece8_ic_outline-movie.svg" // active icon
-			: "https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/60c8bbec6ce11150a3e29131_ic_outline-movie.grey-.svg" // inactive icon
+		const { unlocked, public: isPublic } = lesson
+
+		if (unlocked && (isPublic || isLoggedIn))
+			icon.src = isActiveLeson
+				? "https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/610aa7f70957136062c1ece8_ic_outline-movie.svg" // active icon
+				: "https://uploads-ssl.webflow.com/60c715a8f0171b333d99d01c/60c8bbec6ce11150a3e29131_ic_outline-movie.grey-.svg"
+		else if (unlocked && !isPublic && !isLoggedIn)
+			icon.src =
+				"https://uploads-ssl.webflow.com/60926f7c9d2b2e26dc68b384/6225dbf11e4d4c1d921353f2_ic_outline-lock%20grey.svg"
+		else
+			icon.src =
+				"https://uploads-ssl.webflow.com/60926f7c9d2b2e26dc68b384/60926f7c9d2b2e24a068b3c1_calendar_today.svg"
 
 		if (lesson.unlocked) {
 			const url = new URL(window.location.href)
@@ -176,10 +186,15 @@ function _createCurricuum(data, queries) {
 			url.searchParams.set("lesson", lesson.episode)
 			lessonContainer.href = url.href
 			lessonContainer.setAttribute("data-spa-link", true)
+			if (!lesson.public && !isLoggedIn)
+				lessonContainer.setAttribute(
+					"data-tippy-content",
+					"Diese Lektion benötigt einen DocCheck Login"
+				)
 		} else {
 			lessonContainer.style.opacity = "0.62"
 			lessonContainer.style.cursor = "default"
-			text.setAttribute(
+			lessonContainer.setAttribute(
 				"data-tippy-content",
 				"Diese Lektion wird erst noch erscheinen"
 			)
