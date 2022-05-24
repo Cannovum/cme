@@ -63,12 +63,15 @@ function createSearchResult(
 	const link = document.createElement("a")
 	link.href = "#" + id
 	link.classList.add("h4", "black", "hover-primary")
+
+	// Handle Onclick
 	link.addEventListener("click", (e) => {
 		e.preventDefault()
 		switchTab(type)
 		closeSearch(resultWrapper, inputBox)
 		document.querySelector("#" + id).scrollIntoView({ behavior: "smooth" })
 	})
+
 	link.innerText = primary
 	const icon = document.createElement("img")
 	icon.src =
@@ -149,7 +152,7 @@ function closeSearch(resultsElement, searchBox) {
 	searchBox.value = ""
 	resultsElement.style.transition = "all 200ms ease"
 	resultsElement.style.opacity = "0%"
-	setTimeout(() => (resultsElement.innerHTML = ""), 2200)
+	setTimeout(() => resultsElement.replaceChildren(), 2200)
 }
 
 function switchTab(tab) {
