@@ -89,9 +89,9 @@ function getSearchableData(elements, searchData) {
 	if (searchData.length > 0) return searchData
 
 	const data = elements.map((item) => {
-		const primary = item.querySelector("[data-search-primary").innerText
+		const primary = item.querySelector("[data-search-primary]").innerText
 		const secondary = cleanUpText(
-			item.querySelector("[data-search-secondary").innerText
+			item.querySelector("[data-search-secondary]").innerText
 		)
 		const type = item.getAttribute("data-search-item")
 		const id = item.id
@@ -114,8 +114,8 @@ function filterData(searchData, searchTerm) {
 		}
 	})
 	result.sort((a, b) => {
-		var varA = a.searchScore
-		var varB = b.searchScore
+		let varA = a.searchScore
+		let varB = b.searchScore
 		if (varA < varB) {
 			return -1
 		}
@@ -167,6 +167,10 @@ function switchTab(tab) {
 
 		case "glossar":
 			tabID = "#w-tabs-0-data-w-tab-2"
+			break
+
+		case "download":
+			tabID = "#w-tabs-0-data-w-tab-3"
 			break
 
 		default:
