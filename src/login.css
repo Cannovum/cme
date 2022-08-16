@@ -1,0 +1,21 @@
+.navbar-logout_button {
+	display: flex;
+	position: absolute;
+	bottom: -32px;
+	right: 32px;
+	align-items: center;
+	gap: 12px;
+	background-color: transparent;
+	transition: opacity 940ms cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+@media (max-width: 768px) {
+	.navbar-logout_button {
+		margin-top: 24px;
+	}
+}
+
+.navbar-logout_button.hideLogoutButton {
+	pointer-events: none;
+	opacity: 0;
+}

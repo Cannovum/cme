@@ -2,12 +2,11 @@
 	"name": "cme",
 	"version": "1.0.0",
 	"description": "Single-Page-Application code for CME",
-	"main": "app.js",
 	"scripts": {
 		"dev": "concurrently \"http-server ./dist/ -p 1234\" \"npm run build:watch\"",
 		"build": "node build.js",
 		"build:watch": "nodemon build.js",
-		"deploy": "node build.js && aws s3 sync dist/ s3://cannovum-cme"
+		"deploy": "npm run build && aws s3 sync dist/ s3://cannovum-cme"
 	},
 	"repository": {
 		"type": "git",
@@ -27,6 +26,7 @@
 	},
 	"dependencies": {
 		"concurrently": "^7.0.0",
+		"dotenv": "^16.0.1",
 		"global.css": "^1.1.0",
 		"nodemon": "^2.0.15",
 		"parcel-bundler": "^1.12.5",
@@ -53,6 +53,7 @@
 	"nodemonConfig": {
 		"ignore": [
 			"./dist/"
-		]
+		],
+		"ext": "css,js,json"
 	}
 }
