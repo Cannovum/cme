@@ -468,5 +468,6 @@ _Pvt_Extensions
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
-
-
+/test-results/
+/playwright-report/
+/playwright/.cache/

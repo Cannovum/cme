@@ -6,7 +6,7 @@ MemberStack.onReady.then(({ loggedIn }) => {
 	const sessionStorageRedirectKey = "login-redirect"
 
 	redirectUser(sessionStorageRedirectKey)
-	setAuthButtons()
+	setupAuthenticationButtons()
 	if (!loggedIn) {
 		addHrefToLoginButton()
 		removeProtectedElements()
@@ -79,7 +79,7 @@ MemberStack.onReady.then(({ loggedIn }) => {
 		window.location.assign(loginRedirect) // Redirect user
 	}
 
-	async function setAuthButtons() {
+	async function setupAuthenticationButtons() {
 		if (loggedIn) {
 			const loginButtons = getAuthButtons("login")
 			for (const loginButton of loginButtons) {
