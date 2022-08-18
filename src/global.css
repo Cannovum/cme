@@ -22,7 +22,6 @@
 
 .sticky_curriculum-content_wrapper {
 	transition: height 0.5s ease-in-out;
-	-webkit-transition-duration: 0.5s;
 	overflow: hidden;
 }
 
@@ -30,7 +29,6 @@
 	.sticky_curriculum-content-wrapper_hide {
 		height: 0px;
 		transition: height 0.5s ease-in-out;
-		-webkit-transition-duration: 0.5s;
 	}
 }
 

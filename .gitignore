@@ -4,6 +4,7 @@ index.html
 /dist/
 /dist/*
 dist/
+.env
 
 # Compiled source #
 ###################
@@ -16,7 +17,6 @@ dist/
 *.pyo
 *.pyc 
 *~
-*.vscode
 *.code-workspace
 *.old
 *.bu

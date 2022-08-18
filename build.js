@@ -1,25 +1,45 @@
+require("dotenv/config")
+
+const { promises: fs } = require("node:fs")
 const Bundler = require("parcel-bundler")
-const Path = require("path")
+const path = require("path")
 
 const entryFiles = [
-	Path.join(__dirname, "./src/cme.js"),
-	Path.join(__dirname, "./src/global.js"),
-	Path.join(__dirname, "./src/test_env.js"),
-	Path.join(__dirname, "./src/knowledgebase/knowledgebase.js"),
+	path.join(__dirname, "./src/cme.js"),
+	path.join(__dirname, "./src/login.js"),
+	path.join(__dirname, "./src/test_env.js"),
+	path.join(__dirname, "./src/knowledgebase/knowledgebase.js"),
 ]
 
 const options = {
 	outDir: "./dist",
 	outFile: "cme.js",
 	target: "browser",
-	minify: false,
+	minify: true,
 	cache: true,
 	cacheDir: ".cache",
 	hmr: false,
 	watch: false,
 }
 
-;(async function () {
+;(async () => {
 	const bundler = new Bundler(entryFiles, options)
 	const bundle = await bundler.bundle()
+
+	console.log(process.env.BROWSER_OVERRIDE_DIRECTORY)
+	await copyDir("./dist/", process.env.BROWSER_OVERRIDE_DIRECTORY)
 })()
+
+async function copyDir(src, dest) {
+	await fs.mkdir(dest, { recursive: true })
+	let entries = await fs.readdir(src, { withFileTypes: true })
+
+	for (let entry of entries) {
+		let srcPath = path.join(src, entry.name)
+		let destPath = path.join(dest, entry.name)
+
+		entry.isDirectory()
+			? await copyDir(srcPath, destPath)
+			: await fs.copyFile(srcPath, destPath)
+	}
+}
