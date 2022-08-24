@@ -6,7 +6,7 @@ const sessionStorageRedirectKey = "login-redirect" // the key to set and retriev
 
 MemberStack.onReady.then(({ loggedIn }) => {
 	window.addEventListener("DOMContentLoaded", async () => {
-		setupAuthButtons()
+		setupAuthButtons(loggedIn)
 		if (loggedIn) {
 			redirectUser(sessionStorageRedirectKey) // Redirect user if he should be redirected after the login
 			setupLoggedInSite()
