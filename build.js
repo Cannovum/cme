@@ -11,6 +11,7 @@ const entryFiles = [
 	path.join(__dirname, "./src/login.js"),
 	path.join(__dirname, "./src/test_env.js"),
 	path.join(__dirname, "./src/knowledgebase/knowledgebase.js"),
+	path.join(__dirname, "./src/investor_relations.js"),
 ]
 
 const options = {
