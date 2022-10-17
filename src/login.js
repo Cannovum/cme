@@ -5,7 +5,10 @@ import createLoginModal from "./loginModal"
 const sessionStorageRedirectKey = "login-redirect" // the key to set and retrieve from the session storage
 
 MemberStack.onReady.then(({ loggedIn }) => {
-	if (document.readyState === "interactive") {
+	if (
+		document.readyState === "interactive" ||
+		document.readyState === "complete"
+	) {
 		initialise(loggedIn)
 	} else {
 		window.addEventListener("DOMContentLoaded", initialise(loggedIn))
@@ -13,14 +16,12 @@ MemberStack.onReady.then(({ loggedIn }) => {
 })
 
 function initialise(loggedIn) {
-	return async () => {
-		setupAuthButtons(loggedIn)
-		if (loggedIn) {
-			redirectUser(sessionStorageRedirectKey) // Redirect user if he should be redirected after the login
-			setupLoggedInSite()
-		} else {
-			setupLoggedOutSite(sessionStorageRedirectKey)
-		}
+	setupAuthButtons(loggedIn)
+	if (loggedIn) {
+		redirectUser(sessionStorageRedirectKey) // Redirect user if he should be redirected after the login
+		setupLoggedInSite()
+	} else {
+		setupLoggedOutSite(sessionStorageRedirectKey)
 	}
 }
 
