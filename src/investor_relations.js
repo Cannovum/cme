@@ -95,6 +95,8 @@ function setUpMap() {
 
 	const infoElement = document.querySelector(".ir__map-more-infos")
 
+	const marketSizeWrapper = document.querySelector(".ir__marketsize__meta")
+
 	const countryTitle = document.querySelector(
 		".ir__map__selected-country-title"
 	)
@@ -225,7 +227,12 @@ function setUpMap() {
 	 * @param {string} newSize
 	 */
 	function setMarketSize(newSize) {
-		marketSizeElement.innerText = newSize
+		if (newSize === undefined || newSize === "") {
+			marketSizeWrapper.style.display = "none"
+		} else {
+			marketSizeWrapper.style.display = "flex"
+			marketSizeElement.innerText = newSize
+		}
 	}
 
 	/**
