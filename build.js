@@ -1,12 +1,12 @@
 require("dotenv/config")
 
-const c = require("ansi-colors")
+const signale = require("signale-logger")
 
 const { promises: fs } = require("node:fs")
-const Bundler = require("parcel-bundler")
+const { Parcel } = require("@parcel/core")
 const path = require("path")
 
-const entryFiles = [
+const entries = [
 	path.join(__dirname, "./src/cme.js"),
 	path.join(__dirname, "./src/login.js"),
 	path.join(__dirname, "./src/test_env.js"),
@@ -14,27 +14,33 @@ const entryFiles = [
 	path.join(__dirname, "./src/investor_relations.js"),
 ]
 
-const options = {
-	outDir: "./dist",
-	outFile: "cme.js",
-	target: "browser",
-	minify: true,
-	cache: true,
-	cacheDir: ".cache",
-	hmr: false,
-	watch: false,
-}
+const bundler = new Parcel({
+	entries,
+	defaultConfig: "@parcel/config-default",
+	mode: "production",
+	minify: false,
+})
 
-;(async () => {
-	const bundler = new Bundler(entryFiles, options)
-	const bundle = await bundler.bundle()
+bundler.watch((error, event) => {
+	if (error) {
+		signale.fatal(new Error("Build faled"))
+		signale.fatal(error)
+		throw error
+	}
 
-	await copyDir("./dist/", process.env.BROWSER_OVERRIDE_DIRECTORY)
-})()
+	if (event.type === "buildSuccess") {
+		let bundles = event.bundleGraph.getBundles()
+		signale.success(
+			`✨ Built ${bundles.length} bundles in ${event.buildTime}ms!`
+		)
+
+		copyDir("./dist", process.env.BROWSER_OVERRIDE_DIRECTORY)
+	} else if (event.type === "buildFailure") {
+		signale.alert(event.diagnostics)
+	}
+})
 
 async function copyDir(src, dest) {
-	console.log(`Copying files to ${c.gray(dest)}`)
-
 	await fs.mkdir(dest, { recursive: true })
 	let entries = await fs.readdir(src, { withFileTypes: true })
 
@@ -46,5 +52,4 @@ async function copyDir(src, dest) {
 			? await copyDir(srcPath, destPath)
 			: await fs.copyFile(srcPath, destPath)
 	}
-	console.log(c.green(`Finished copying files to ${c.gray(dest)}`))
 }
