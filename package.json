@@ -4,7 +4,8 @@
 	"description": "Single-Page-Application code for CME",
 	"scripts": {
 		"dev": "concurrently \"http-server ./dist/ -p 1234\" \"npm run watch\"",
-		"watch": "node build.js"
+		"watch": "node build.js",
+		"deploy": "aws s3 sync dist/ s3://cannovum-cme"
 	},
 	"repository": {
 		"type": "git",
