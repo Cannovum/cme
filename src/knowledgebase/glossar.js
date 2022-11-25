@@ -1,5 +1,3 @@
-import { entries } from "lodash"
-
 export default async function buildGlossar() {
 	const wrapper = document.querySelector(".collection-list-9")
 	const entries = Array.from(document.querySelectorAll(".collection-item-6"))
