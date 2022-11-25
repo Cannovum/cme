@@ -4,10 +4,15 @@ const { promises: fs } = require("node:fs")
 const Bundler = require("parcel-bundler")
 const path = require("path")
 
+if (!process.env.BROWSER_OVERRIDE_DIRECTORY) {
+	throw new Error("Please setup the override path in your `.env` file")
+}
+
 const entryFiles = [
 	path.join(__dirname, "./src/cme.js"),
 	path.join(__dirname, "./src/login.js"),
 	path.join(__dirname, "./src/test_env.js"),
+	path.join(__dirname, "./src/home.js"),
 	path.join(__dirname, "./src/knowledgebase/knowledgebase.js"),
 ]
 
