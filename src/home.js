@@ -9,21 +9,21 @@ if (
 	document.addEventListener("DOMContentLoaded", init)
 }
 
-async function init() {
-	const toggle = document.querySelector(".hp-popup-toggle")
-	const closeButton = document.querySelector(".hp-popup-close")
-	const background = document.querySelector(".hp-popup-background")
-	const video = document.querySelector("#interview_video iframe")
-
-	console.log("TEST")
-
-	console.log({ toggle, closeButton, background })
+function init() {
+	const toggles = document.querySelectorAll(".hp-popup-toggle")
+	const closeButtons = document.querySelectorAll(".hp-popup-close")
+	const backgrounds = document.querySelectorAll(".hp-popup-background")
+	function getVideos() {
+		return document.querySelectorAll(".hp-popup-video iframe")
+	}
 
 	// Adds overflow hidden to the body prevent page scrolling when popup is open
-	toggle.addEventListener("click", disableScroll)
+	for (const toggle of toggles) {
+		toggle.addEventListener("click", disableScroll)
+	}
 
-	for (const element of [closeButton, background]) {
-		element.addEventListener("click", handleClose(video))
+	for (const element of [...closeButtons, ...backgrounds]) {
+		element.addEventListener("click", handleClose(getVideos))
 	}
 }
 
@@ -35,23 +35,20 @@ function enableScroll() {
 	document.body.style.overflow = "auto"
 }
 
-function handleClose(videoIFrame) {
-	console.log({ videoIFrame })
-	console.log(videoIFrame.attr("src"))
-
+function handleClose(getVideos) {
 	return () => {
 		enableScroll()
-		resetVideoPlayback(videoIFrame)
+		resetVideoPlayback(getVideos)
 	}
 }
 
-// Maybe do it with a timeout
-function resetVideoPlayback(videoIFrame) {
-	console.log({ videoIFrameX: videoIFrame })
-	const currentSource = videoIFrame.attr("src")
-
-	setTimeout(() => {
-		// Override with empty src and set it again to force a reload
-		videoIFrame.attr("src", currentSource)
-	})
+/**
+ *
+ * @param {() => HTMLIFrameElement[]} getVideos
+ */
+function resetVideoPlayback(getVideos) {
+	for (const video of getVideos()) {
+		// Replace the video to force a reload
+		video.replaceWith(video.cloneNode())
+	}
 }
